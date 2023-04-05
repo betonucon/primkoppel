@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Api;
    
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController as BaseController;
-use App\Models\User;
-use App\Models\Viewloginsales;
-use App\Models\Mobilecustomer;
-use App\Models\Accesstoken;
+use App\User;
+use App\VUser;
+use App\Accesstoken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -102,60 +101,36 @@ class AuthController extends BaseController
     public function login(Request $request)
     {
         error_reporting(0);
-        if(Auth::attempt(['username' => $request->username, 'password' => $request->password, 'role_id' => 3])){ 
+        if(Auth::attempt(['email' => $request->username, 'password' => $request->password])){ 
             $auth = Auth::user(); 
-            $user = Viewloginsales::where('username',$auth->username)->first(); 
-            // $hapus=Accesstoken::where('tokenable_id',$user->id)->delete();
-            
-                if($auth->active_status==1){
-
+            $user = VUser::where('username',$auth->username)->first(); 
+           
+                if($auth->aktif==1){
+                    if($user->pinjaman_aktif>0){
+                        $pinjamanaktif=true;
+                    }else{
+                        $pinjamanaktif=false;
+                    }
+                    if($user->role_id==5){
+                        $anggota=false;
+                    }else{
+                        $anggota=true;
+                    }
+                    $success=[];
                     $berier=$auth->createToken('MyApp')->plainTextToken;
                     $token=explode('|',$berier);
-                    // $success['token'] =  $berier; 
                     $success['token'] =  $berier; 
-                    $success['nama'] =  $user->Nama;
-                    $success['KD_Salesman'] =  $user->KD_Salesman;
-                    $success['KD_Divisi'] =  $user->KD_Divisi;
-                    $success['Nama_Divisi'] =  $user->Nama_Divisi;
+                    $success['nama'] =  $user->name;
+                    $success['nik'] =  $user->username;
+                    $success['nik'] =  $user->username;
+                    $success['anggota'] =  $anggota;
+                    $success['saldo_wajib'] =  $user->saldo_wajib;
+                    $success['saldo_sukarela'] =  $user->saldo_sukarela;
+                    $success['pinjaman_aktif'] =  $pinjamanaktif;
                     
                     return $this->sendResponse($success, 'User login successfully.');
                 }else{
                    
-                        $error='Akun anda telah dibekukan';
-                        return $this->sendResponseerror($error);
-                    
-                }
-            
-            
-        } 
-        else{ 
-            $error='username atau password anda salah';
-            return $this->sendResponseerror($error);
-        } 
-    }
-
-    public function login_customer(Request $request)
-    {
-        error_reporting(0);
-        if(Auth::attempt(['email' => $request->username, 'password' => $request->password, 'role_id' => 4])){ 
-            $auth = Auth::user(); 
-            $user = Mobilecustomer::where('users_id',$auth->id)->first(); 
-            $hapus=Accesstoken::where('tokenable_id',$user->id)->delete();
-            
-                if($auth->active_status==1){
-
-                    $berier=$auth->createToken('MyApp')->plainTextToken;
-                    $token=explode('|',$berier);
-                    // $success['token'] =  $berier; 
-                    $success['token'] =  $berier; 
-                    $success['nama'] =  $user->nama_customer;
-                    $success['email'] =  $user->email;
-                    $success['foto'] =  $user->foto;
-                    $success['kode_customer'] =  $user->kode_customer;
-                    
-                    return $this->sendResponse($success, 'User login successfully.');
-                }else{
-                    
                         $error='Akun anda telah dibekukan';
                         return $this->sendResponseerror($error);
                     
