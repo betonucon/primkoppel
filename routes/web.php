@@ -63,6 +63,7 @@ Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){
     Route::get('/',[AnggotaController::class, 'index']);
     Route::get('/tambah',[AnggotaController::class, 'tambah']);
     Route::get('/get_import',[AnggotaController::class, 'get_import']);
+    Route::get('/get_user',[AnggotaController::class, 'get_user']);
     Route::get('/cari_qr',[AnggotaController::class, 'cari_qr']);
     Route::get('/get_data',[AnggotaController::class, 'get_data']);
     Route::get('/view_file',[AnggotaController::class, 'view_file']);

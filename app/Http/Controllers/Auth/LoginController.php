@@ -29,11 +29,9 @@ class LoginController extends Controller
     protected $redirectTo = RouteServiceProvider::HOME;
     protected function credentials(\Illuminate\Http\Request $request)
     {
-        if(is_numeric($request->get('email'))){
-            return ['username'=>$request->get('email'),'password'=>$request->get('password'),'sts_anggota'=>1];
-        }else{
-            return ['email' => $request->get('email'), 'password'=>$request->get('password'),'sts_anggota'=>1];
-        }
+        
+        return ['username'=>$request->get('email'),'password'=>$request->get('password'),'sts_anggota'=>1];
+       
         return $request->only($this->username(), 'password');
     }
     /**

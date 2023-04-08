@@ -29,6 +29,7 @@ class AnggotaController extends Controller
         }
         
     }
+
     public function get_import(request $request){
         $data=Agt::orderBy('no_register','Asc')->get();;
         foreach($data as $no=>$o){
@@ -54,6 +55,25 @@ class AnggotaController extends Controller
                 'tahun'=>$tahun,
                 'tgl_masuk'=>$masuk,
                 'active'=>1,
+                'created_at'=>date('Y-m-d H:i:s'),
+                
+            ]);
+        }
+        
+    }
+    public function get_user(request $request){
+        $data=Anggota::orderBy('id','Asc')->get();;
+        foreach($data as $no=>$o){
+            
+            $save=User::UpdateOrcreate([
+                'username'=>$o->no_register,
+            ],[
+                'name'=>$o->nama,
+                'email'=>$o->no_register.'@gmail.com',
+                'role_id'=>4,
+                'sts_anggota'=>1,
+                'active'=>1,
+                'password'=>Hash::make('admin'),
                 'created_at'=>date('Y-m-d H:i:s'),
                 
             ]);
