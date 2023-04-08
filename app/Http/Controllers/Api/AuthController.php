@@ -123,7 +123,7 @@ class AuthController extends BaseController
                     $success['nama'] =  $user->name;
                     $success['nik'] =  $user->username;
                     $success['nik'] =  $user->username;
-                    $success['anggota'] =  $anggota;
+                    $success['sts_anggota'] =  $user->sts_anggota;
                     $success['saldo_wajib'] =  $user->saldo_wajib;
                     $success['saldo_sukarela'] =  $user->saldo_sukarela;
                     $success['pinjaman_aktif'] =  $pinjamanaktif;
