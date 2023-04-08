@@ -26,7 +26,13 @@ class BarangController extends BaseController
             $page=$request->page;
         }
         $query=VBarang::query();
-        $data=$query->orderBy('id','Asc')->paginate(20);
+        if($request->orderby=='1'){
+            $data=$query->orderBy('harga_jual','Asc');
+        }else{
+            $data=$query->orderBy('nama_barang','Asc');
+        }
+        
+        $data=$query->paginate(20);
         $cek=$query->count();
         $col = [];
             
