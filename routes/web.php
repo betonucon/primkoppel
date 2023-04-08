@@ -72,6 +72,32 @@ Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){
     Route::post('/hapus',[AnggotaController::class, 'hapus_data']);
 });
 
+Route::group(['prefix' => 'wajib','middleware'    => 'auth'],function(){
+    Route::get('/',[SimpananwajibController::class, 'index']);
+    Route::get('/tambah',[SimpananwajibController::class, 'tambah']);
+    Route::get('/get_import',[SimpananwajibController::class, 'get_import']);
+    Route::get('/get_user',[SimpananwajibController::class, 'get_user']);
+    Route::get('/cari_qr',[SimpananwajibController::class, 'cari_qr']);
+    Route::get('/get_data',[SimpananwajibController::class, 'get_data']);
+    Route::get('/view_file',[SimpananwajibController::class, 'view_file']);
+    Route::get('/cari_anggota',[SimpananwajibController::class, 'cari_anggota']);
+    Route::post('/',[SimpananwajibController::class, 'save_data']);
+    Route::post('/hapus',[SimpananwajibController::class, 'hapus_data']);
+});
+
+Route::group(['prefix' => 'sukarela','middleware'    => 'auth'],function(){
+    Route::get('/',[SimpanansukarelaController::class, 'index']);
+    Route::get('/tambah',[SimpanansukarelaController::class, 'tambah']);
+    Route::get('/get_import',[SimpanansukarelaController::class, 'get_import']);
+    Route::get('/get_user',[SimpanansukarelaController::class, 'get_user']);
+    Route::get('/cari_qr',[SimpanansukarelaController::class, 'cari_qr']);
+    Route::get('/get_data',[SimpanansukarelaController::class, 'get_data']);
+    Route::get('/view_file',[SimpanansukarelaController::class, 'view_file']);
+    Route::get('/cari_anggota',[SimpanansukarelaController::class, 'cari_anggota']);
+    Route::post('/',[SimpanansukarelaController::class, 'save_data']);
+    Route::post('/hapus',[SimpanansukarelaController::class, 'hapus_data']);
+});
+
 Route::group(['middleware'    => 'auth'],function(){
     Route::get('Gaji',[GajiController::class, 'index']);
     Route::get('Gaji/cetak',[GajiController::class, 'cetak']);

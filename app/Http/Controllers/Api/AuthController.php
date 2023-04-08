@@ -105,7 +105,7 @@ class AuthController extends BaseController
             $auth = Auth::user(); 
             $user = VUser::where('username',$auth->username)->first(); 
            
-                if($auth->aktif==1){
+                if($auth->active==1){
                     if($user->pinjaman_aktif>0){
                         $pinjamanaktif=true;
                     }else{
@@ -121,8 +121,7 @@ class AuthController extends BaseController
                     $token=explode('|',$berier);
                     $success['token'] =  $berier; 
                     $success['nama'] =  $user->name;
-                    $success['nik'] =  $user->username;
-                    $success['nik'] =  $user->username;
+                    $success['no_register'] =  $user->username;
                     $success['sts_anggota'] =  $user->sts_anggota;
                     $success['saldo_wajib'] =  $user->saldo_wajib;
                     $success['saldo_sukarela'] =  $user->saldo_sukarela;
