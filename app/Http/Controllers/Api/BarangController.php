@@ -41,8 +41,8 @@ class BarangController extends BaseController
                 $cl['id'] = $o->id;
                 $cl['kode_barang'] = $o->kode_barang;
                 $cl['nama_barang'] = $o->nama_barang;
-                $cl['harga_modal'] = $o->harga_modal;
-                $cl['harga_jual'] = $o->harga_jual;
+                $cl['harga_modal'] = round($o->harga_modal);
+                $cl['harga_jual'] = round($o->harga_jual);
                 $cl['satuan'] = $o->satuan;
                 $cl['stok'] = $o->stok;
                 $cl['foto'] = url_plug().'/_icon/'.$o->file;
