@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Controllers\Api\PinjamanController;
+use App\Http\Controllers\Api\BarangController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,4 +33,5 @@ Route::middleware('auth:sanctum')->group( function () {
     });
 });
 
+Route::get('barang', [BarangController::class, 'barang']);
 Route::post('register', [AuthController::class, 'register']);

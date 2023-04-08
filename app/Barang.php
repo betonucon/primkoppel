@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Anggota extends Model
+class Barang extends Model
 {
-    protected $table = 'anggota';
+    protected $table = 'barang';
     protected $guarded = ['id'];
     public $timestamps = false;
 }
-

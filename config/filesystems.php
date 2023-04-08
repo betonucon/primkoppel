@@ -48,9 +48,9 @@ return [
             'root' => storage_path('app'),
         ],
 
-        'public_uploads' => [
+        'public_icon' => [
             'driver' => 'local',
-            'root'   => public_path() . '/_file_excel',
+            'root'   => public_path() . '/_icon',
         ],
         'public' => [
             'driver' => 'local',

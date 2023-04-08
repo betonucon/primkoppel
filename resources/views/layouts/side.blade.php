@@ -13,6 +13,30 @@
 						</a>
 					</li>
 					<li class="has-sub">
+						<a href="javascript:;">
+							<b class="caret"></b>
+							<i class="fa fa-users"></i>
+							<span>Anggota</span> 
+						</a>
+						<ul class="sub-menu">
+							<li><a href="{{url('anggota')}}">Anggota </a></li>
+							<li><a href="{{url('anggota')}}">Stok Barang</a></li>
+							
+						</ul>
+					</li>
+					<li class="has-sub">
+						<a href="javascript:;">
+							<b class="caret"></b>
+							<i class="fa fa-briefcase"></i>
+							<span>Barang</span> 
+						</a>
+						<ul class="sub-menu">
+							<li><a href="{{url('barang')}}">Daftar Barang </a></li>
+							<li><a href="{{url('Simpanansukarela')}}">Stok Barang</a></li>
+							
+						</ul>
+					</li>
+					<li class="has-sub">
 						<a href="{{url('Pinjaman')}}">
 							{!! notifikasi_pengajuan() !!}
 							<i class="fa fa-list"></i>

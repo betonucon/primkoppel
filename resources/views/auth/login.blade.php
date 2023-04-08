@@ -4,8 +4,8 @@
 			<div class="right-content">
 				<!-- begin register-header -->
 				<h2 class="register-header" style="text-align:center">
-					<img src="{{url('img/kopkar.png')}}" width="12%">&nbsp;DEKOPINDA KOP
-					<small>Dekopinda Kota Cilegon</small>
+					<img src="{{url('public/img/kopkar.png')}}?v={{date('ymdhis')}}" width="12%">&nbsp;PRIMKOPPEL
+					<small>Primkoppel</small>
 				</h2>
 				<!-- end register-header -->
 				<!-- begin register-content -->
@@ -40,7 +40,7 @@
 						</div>
 						<hr />
 						<p class="text-center mb-0">
-							&copy; Dekopinda Kota Cilegon 2022
+							&copy; Primkoppel 2022
 						</p>
 					</form>
 				</div>

@@ -44,6 +44,36 @@ function bulan($bulan)
       }
    return $bulan;
 }
+function o_bulan($bulan)
+{
+   Switch ($bulan){
+      case 'Januari' : $bulan="01";
+         Break;
+      case 'Februari' : $bulan="02";
+         Break;
+      case 'Maret' : $bulan="03";
+         Break;
+      case 'April' : $bulan="04";
+         Break;
+      case 'Mei' : $bulan="05";
+         Break;
+      case 'Juni' : $bulan="06";
+         Break;
+      case 'Juli' : $bulan="07";
+         Break;
+      case '08' : $bulan="Agustus";
+         Break;
+      case 'Agustus' : $bulan="09";
+         Break;
+      case 'Oktober' : $bulan="11";
+         Break;
+      case 'November' : $bulan="12";
+         Break;
+      case 'Desember' : $bulan="12";
+         Break;
+      }
+   return $bulan;
+}
 function bulan_kedepan($tanggal,$lama)
 {
    $tgl=explode(' ',$tanggal);
@@ -194,8 +224,22 @@ function sum_transaksi($tahun,$bulan,$kat){
    }
    return $sts;
 }
+function url_plug(){
+   $data=url('public');
+   return $data;
+}
+function ubah_uang($uang){
+   $patr='/([^0-9]+)/';
+   $ug=explode('.',$uang);
+   $data=preg_replace($patr,'',$ug[0]);
+   return $data;
+}
 function get_slid(){
    $data=App\Slipgaji::select('tahun')->groupBy('tahun')->orderBy('tahun','Desc')->get();
+   return $data;
+}
+function get_satuan(){
+   $data=App\Satuan::orderBy('satuan','Desc')->get();
    return $data;
 }
 function ubah_int($nilai){
@@ -374,7 +418,12 @@ function bln($id){
 
    return substr(bulan($data),0,3);
 }
-
+function barcoderr($id){
+   $d = new Milon\Barcode\DNS1D();
+   $d->setStorPath(__DIR__.'/cache/');
+   $data='<img src="data:image/png;base64,'.$d->getBarcodePNG("$id", 'C39+',1,43,array(1,1,1), true).'" alt="barcode" />';
+   return $data;
+}
 function blnfull($id){
    if($id>9){
       $data=$id;
@@ -385,6 +434,18 @@ function blnfull($id){
    return bulan($data);
 }
 
-
+function kode_barang(){
+    
+   $cek=App\Barang::count();
+   if($cek>0){
+       $mst=App\Barang::orderBy('kode_barang','Desc')->firstOrfail();
+       $urutan = (int) substr($mst['kode_barang'], 1, 6);
+       $urutan++;
+       $nomor='B'.sprintf("%06s",  $urutan);
+   }else{
+       $nomor='B'.sprintf("%06s",  1);
+   }
+   return $nomor;
+}
 
 ?>

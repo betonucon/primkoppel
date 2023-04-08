@@ -11,13 +11,12 @@ use App\Vanggota;
 use App\Barang;
 use App\VBarang;
 use App\Anggota;
-use App\Agt;
 use App\User;
-class AnggotaController extends Controller
+class BarangController extends Controller
 {
     public function index(request $request){
-        $menu='Anggota';
-        return view('anggota.index',compact('menu'));
+        $menu='Daftar Barang';
+        return view('barang.index',compact('menu'));
     }
 
     public function cari_qr(request $request){
@@ -26,37 +25,6 @@ class AnggotaController extends Controller
             return '@'.$data;
         }else{
             return '@0';
-        }
-        
-    }
-    public function get_import(request $request){
-        $data=Agt::orderBy('no_register','Asc')->get();;
-        foreach($data as $no=>$o){
-            
-            if($o->bulan==0){
-                $bulan=01;
-            }else{
-                $bulan=$o->bulan;
-            }
-            if($o->tahun==0){
-                $tahun=2020;
-            }else{
-                $tahun=$o->tahun;
-            }
-            $masuk=$tahun.'-'.$bulan.'-01';
-            $no_register=date('y').sprintf("%05s",  $o->no_register);
-            $save=Anggota::UpdateOrcreate([
-                'no_register'=>$no_register,
-            ],[
-                'nama'=>$o->nama,
-                'perusahaan'=>$o->perusahaan,
-                'bulan'=>$bulan,
-                'tahun'=>$tahun,
-                'tgl_masuk'=>$masuk,
-                'active'=>1,
-                'created_at'=>date('Y-m-d H:i:s'),
-                
-            ]);
         }
         
     }
@@ -69,7 +37,7 @@ class AnggotaController extends Controller
             $read='';
         }
         $data=Barang::where('id',$request->id)->first();
-        return view('anggota.tambah',compact('data','id','read'));
+        return view('barang.tambah',compact('data','id','read'));
     }
     public function view_file(request $request){
         error_reporting(0);
@@ -131,7 +99,7 @@ class AnggotaController extends Controller
         $messages = [];
         
         $rules['nama_barang']= 'required';
-        $messages['nama_anggota.required']= 'Silahkan isi nama barang';
+        $messages['nama_barang.required']= 'Silahkan isi nama barang';
 
         $rules['harga_modal']= 'required|min:0|not_in:0';
         $messages['harga_modal.required']= 'Masukan harga modal ';
@@ -176,7 +144,7 @@ class AnggotaController extends Controller
                     $kode_qr=$request->kode_qr;
                 }
                 $image = $request->file('file');
-                $imageFileName =$kode_anggota.'.'.$image->getClientOriginalExtension();
+                $imageFileName =$kode_barang.'.'.$image->getClientOriginalExtension();
                 $filePath =$imageFileName;
                 $file =\Storage::disk('public_icon');
                 if($file->put($filePath, file_get_contents($image))){
@@ -210,7 +178,7 @@ class AnggotaController extends Controller
                 ]);
                 if($request->file!=""){
                     $image = $request->file('file');
-                    $imageFileName =$mst->kode_anggota.'.'.$image->getClientOriginalExtension();
+                    $imageFileName =$mst->kode_barang.'.'.$image->getClientOriginalExtension();
                     $filePath =$imageFileName;
                     $file =\Storage::disk('public_icon');
                     if($file->put($filePath, file_get_contents($image))){

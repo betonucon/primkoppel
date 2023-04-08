@@ -32,11 +32,11 @@
 		<div class="register register-with-news-feed">
 			<!-- begin news-feed -->
 			<div class="news-feed">
-				<div class="news-image" style="background-image: url({{url('public/assets/assets/img/login-bg/login-bg-15.jpg')}})"></div>
+				<div class="news-image" style="background-image: url({{url('public/assets/assets/img/login-bg/login-bg-15.jpg')}}?v={{date('ymdhis')}})"></div>
 				<div class="news-caption">
-					<h4 class="caption-title"><b>DEKOPINDA</b> KOP</h4>
+					<h4 class="caption-title"><b>PRIMKOPPEL</b></h4>
 					<p>
-					Aplikasi koperasi Kota Cilegon 2022
+					Aplikasi koperasi Pelabuhan
 					</p>
 				</div>
 			</div>

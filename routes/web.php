@@ -12,6 +12,7 @@ use App\Http\Controllers\MasterController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\TransaksipinjamanController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\BarangController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,13 +47,28 @@ Route::post('simpan',[AuthController::class, 'simpan']);
 
 Auth::routes();
 Route::get('ubah_rupiah',[MasterController::class, 'ubah_rupiah']);
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Anggota',[AnggotaController::class, 'index']);
-    Route::get('Anggota/tambah',[AnggotaController::class, 'tambah']);
-    Route::get('Anggota/get_data',[AnggotaController::class, 'get_data']);
-    Route::get('Anggota/cari_anggota',[AnggotaController::class, 'cari_anggota']);
-    Route::post('Anggota',[AnggotaController::class, 'save_data']);
-    Route::post('Anggota/hapus',[AnggotaController::class, 'hapus_data']);
+
+Route::group(['prefix' => 'barang','middleware'    => 'auth'],function(){
+    Route::get('/',[BarangController::class, 'index']);
+    Route::get('/tambah',[BarangController::class, 'tambah']);
+    Route::get('/cari_qr',[BarangController::class, 'cari_qr']);
+    Route::get('/get_data',[BarangController::class, 'get_data']);
+    Route::get('/view_file',[BarangController::class, 'view_file']);
+    Route::get('/cari_anggota',[BarangController::class, 'cari_anggota']);
+    Route::post('/',[BarangController::class, 'save_data']);
+    Route::post('/hapus',[BarangController::class, 'hapus_data']);
+});
+
+Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){
+    Route::get('/',[AnggotaController::class, 'index']);
+    Route::get('/tambah',[AnggotaController::class, 'tambah']);
+    Route::get('/get_import',[AnggotaController::class, 'get_import']);
+    Route::get('/cari_qr',[AnggotaController::class, 'cari_qr']);
+    Route::get('/get_data',[AnggotaController::class, 'get_data']);
+    Route::get('/view_file',[AnggotaController::class, 'view_file']);
+    Route::get('/cari_anggota',[AnggotaController::class, 'cari_anggota']);
+    Route::post('/',[AnggotaController::class, 'save_data']);
+    Route::post('/hapus',[AnggotaController::class, 'hapus_data']);
 });
 
 Route::group(['middleware'    => 'auth'],function(){
@@ -113,4 +129,4 @@ Route::group(['middleware'    => 'auth'],function(){
     Route::Post('Simpanansukarela/import',[SimpanansukarelaController::class, 'import_data_simpan']);
 });
 
-// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');

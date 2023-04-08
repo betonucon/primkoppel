@@ -4,10 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Anggota extends Model
+class VBarang extends Model
 {
-    protected $table = 'anggota';
+    protected $table = 'view_barang';
     protected $guarded = ['id'];
     public $timestamps = false;
 }
-
