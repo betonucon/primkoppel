@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pinjaman extends Model
+class VSimpananwajib extends Model
 {
-    protected $table = 'pinjaman';
+    protected $table = 'view_simpanan_wajib';
     public $timestamps = false;
     protected $guarded = ['id'];
+
+    
 }

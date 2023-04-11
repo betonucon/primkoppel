@@ -14,7 +14,7 @@
 					processing: false,
 					ordering: false,
 					serverSide: false,
-					ajax:"{{ url('barang/get_data')}}",
+					ajax:"{{ url('anggota/get_data')}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -22,13 +22,12 @@
                             } 
                         },
 						{ data: 'action', className: "text-center" },
-						{ data: 'file', className: "text-center" },
-						{ data: 'kode_barang' },
-						{ data: 'nama_barang' },
-						{ data: 'satuan' , className: "text-center" },
-						{ data: 'uang_harga_modal', className: "text-right" },
-						{ data: 'uang_harga_jual', className: "text-right" },
-						{ data: 'stok', className: "text-right" },
+						{ data: 'no_register' },
+						{ data: 'name' },
+						{ data: 'perusahaan' },
+						{ data: 'uang_wajib', className: "text-right" },
+						{ data: 'uang_sukarela', className: "text-right" },
+						{ data: 'uang_pokok', className: "text-right" },
 						
 						
 					],
@@ -102,13 +101,12 @@
 											<tr>
 												<th width="5%">No</th>
 												<th width="5%"></th>
-												<th width="5%"></th>
-												<th width="10%">KODE</th>
-												<th class="text-nowrap">NAMA BARANG</th>
-												<th width="10%" class="text-nowrap">SATUAN</th>
-												<th width="15%" class="text-nowrap">HARGA MODAL</th>
-												<th width="15%" class="text-nowrap">HARGA JUAL</th>
-												<th width="10%" class="text-nowrap">STOK</th>
+												<th width="10%">NO REGISTER</th>
+												<th class="text-nowrap">NAMA</th>
+												<th width="20%" class="text-nowrap">PERUSAHAAN</th>
+												<th width="13%" class="text-nowrap">S.WAJIB</th>
+												<th width="13%" class="text-nowrap">S.SUKARELA</th>
+												<th width="13%" class="text-nowrap">S.POKOK</th>
 											</tr>
 											
 										</thead>
@@ -176,7 +174,7 @@
 		
 		function tambah(id){
 			$('#modal-tambah').modal('show');
-			$('#tampil_tambah').load("{{url('barang/tambah')}}?id="+id);
+			$('#tampil_tambah').load("{{url('anggota/tambah')}}?id="+id);
 			
 		}
 		function show_foto(file){
@@ -186,15 +184,49 @@
 		}
 		function show_foto(file,kode_qr){
 			$('#modal-file').modal('show');
-			$('#tampil_file').load("{{url('barang/view_file')}}?file="+file+"&kode_qr="+kode_qr);
+			$('#tampil_file').load("{{url('anggota/view_file')}}?file="+file+"&kode_qr="+kode_qr);
 			
 		}
+		function delete_data(id){
+           
+           swal({
+               title: "Yakin menghapus data ini ?",
+               text: "",
+               type: "warning",
+               icon: "info",
+               showCancelButton: true,
+               align:"center",
+               confirmButtonClass: "btn-danger",
+               confirmButtonText: "Yes, delete it!",
+               closeOnConfirm: false
+           }).then((willDelete) => {
+               if (willDelete) {
+                       $.ajax({
+                           type: 'GET',
+                           url: "{{url('anggota/delete')}}",
+                           data: "id="+id,
+                           success: function(msg){
+                               swal("Success! berhasil terhapus!", {
+                                   icon: "success",
+                               });
+                               var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('anggota/get_data')}}").load();
+                           }
+                       });
+                   
+                   
+               } else {
+                   
+               }
+           });
+           
+        }
 		function simpan_data(){
                 
 				var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('barang/') }}",
+					url: "{{ url('anggota/') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -209,7 +241,7 @@
 							$('#modal-tambah').modal('hide');
 							$('#tampil_tambah').html("");
 							var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('barang/get_data')}}").load();
+                                tables.ajax.url("{{ url('anggota/get_data')}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							

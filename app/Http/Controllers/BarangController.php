@@ -86,11 +86,8 @@ class BarangController extends Controller
 
     public function hapus_data(request $request){
         error_reporting(0);
-        $sum=count($request->id);
-        for($x=0;$x<$sum;$x++){
-            $deluser=User::where('username',$request->id[$x])->delete();
-            $delanggota=Anggota::where('nik',$request->id[$x])->delete();
-        }
+        $delanggota=Barang::where('id',$request->id)->update(['active'=>0]);
+       
     }
     public function save_data(request $request){
         error_reporting(0);

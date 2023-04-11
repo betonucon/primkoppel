@@ -13,6 +13,7 @@ use App\VBarang;
 use App\Anggota;
 use App\Agt;
 use App\User;
+use App\VUser;
 class AnggotaController extends Controller
 {
     public function index(request $request){
@@ -88,7 +89,7 @@ class AnggotaController extends Controller
         }else{
             $read='';
         }
-        $data=Barang::where('id',$request->id)->first();
+        $data=Anggota::where('id',$request->id)->first();
         return view('anggota.tambah',compact('data','id','read'));
     }
     public function view_file(request $request){
@@ -103,7 +104,8 @@ class AnggotaController extends Controller
     }
 
     public function get_data(request $request){
-        $data=VBarang::where('active',1)->orderBy('nama_barang','Asc')->get();
+        error_reporting(0);
+        $data=VUser::where('anggota_active',1)->orderBy('no_register','Asc')->get();
        
         return  Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function($data){
@@ -113,8 +115,8 @@ class AnggotaController extends Controller
 								<div class="dropdown-menu dropdown-menu-right">
 									<a href="javascript:;" class="dropdown-item">Action Button</a>
 									<div class="dropdown-divider"></div>
-                                    <a href="javascript:;" onclick="tambah('.$data->id.')" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> Ubah</a>
-									<a href="javascript:;" onclick="delete_data('.$data->id.')"  class="dropdown-item"><i class="fas fa-trash-alt fa-fw"></i> Hapus</a>
+                                    <a href="javascript:;" onclick="tambah('.$data->anggota_id.')" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> Ubah</a>
+									<a href="javascript:;" onclick="delete_data('.$data->anggota_id.')"  class="dropdown-item"><i class="fas fa-trash-alt fa-fw"></i> Hapus</a>
 									
 								</div>
 							</div>
@@ -125,12 +127,16 @@ class AnggotaController extends Controller
                     $btn='<span  class="btn btn-info btn-xs" onclick="show_foto(`'.$data->file.'`,`'.$data->kode_qr.'`)"><i class="fas fa-image"></i></span>';
                     return $btn;
                 })
-                ->addColumn('uang_harga_modal', function($data){
-                    return uang($data->harga_modal);
+                ->addColumn('uang_wajib', function($data){
+                    return uang($data->saldo_wajib);
                 })
-                ->addColumn('uang_harga_jual', function($data){
-                    return uang($data->harga_jual);
+                ->addColumn('uang_sukarela', function($data){
+                    return uang($data->saldo_sukarela);
                 })
+                ->addColumn('uang_pokok', function($data){
+                    return uang($data->saldo_pokok);
+                })
+                
                 
                 ->rawColumns(['action','file'])
                 ->make(true);
@@ -138,11 +144,8 @@ class AnggotaController extends Controller
 
     public function hapus_data(request $request){
         error_reporting(0);
-        $sum=count($request->id);
-        for($x=0;$x<$sum;$x++){
-            $deluser=User::where('username',$request->id[$x])->delete();
-            $delanggota=Anggota::where('nik',$request->id[$x])->delete();
-        }
+        $delanggota=Anggota::where('id',$request->id)->update(['active'=>0]);
+        
     }
     public function save_data(request $request){
         error_reporting(0);
@@ -150,29 +153,17 @@ class AnggotaController extends Controller
         $rules = [];
         $messages = [];
         
-        $rules['nama_barang']= 'required';
-        $messages['nama_anggota.required']= 'Silahkan isi nama barang';
-
-        $rules['harga_modal']= 'required|min:0|not_in:0';
-        $messages['harga_modal.required']= 'Masukan harga modal ';
-        $messages['harga_modal.not_in']= 'Masukan harga modal ';
-        
-        $rules['harga_jual']= 'required|min:0|not_in:0';
-        $messages['harga_jual.required']= 'Masukan harga jual ';
-        $messages['harga_jual.not_in']= 'Masukan harga jual ';
-        
-        $rules['satuan']= 'required';
-        $messages['satuan.required']= 'Silahkan pilih satuan';
-        if($request->id==0){
-            $rules['file']= 'required|mimes:jpeg,jpg,png';
-            $messages['file.required']= 'Silahkan upload icon gambar';
-            $messages['file.mimes']= 'Hanya menerima format (jpeg,jpg,png)';
-        }else{
-            if($request->file!=""){
-                $rules['file']= 'required|mimes:jpeg,jpg,png';
-                $messages['file.required']= 'Silahkan upload icon gambar';
-                $messages['file.mimes']= 'Hanya menerima format (jpeg,jpg,png)';
-            }
+        $rules['nama']= 'required';
+        $messages['nama.required']= 'Silahkan isi nama anggota';
+        $rules['perusahaan']= 'required';
+        $messages['perusahaan.required']= 'Silahkan isi perusahaan';
+        if($request->email!=""){
+            $rules['email']= 'email';
+            $messages['email.email']= 'Format email salah';
+        }
+        if($request->no_hp!=""){
+            $rules['no_hp']= 'numeric';
+            $messages['no_hp.numeric']= 'Format no handphone salah';
         }
         $validator = Validator::make($request->all(), $rules, $messages);
         $val=$validator->Errors();
@@ -188,61 +179,60 @@ class AnggotaController extends Controller
             echo'</div>';
         }else{
             if($request->id==0){
-                $cek=User::where('username',$request->username)->count();
-                $kode_barang=kode_barang();
-                if($request->kode_qr==""){
-                    $kode_qr=$kode_barang;
-                }else{
-                    $kode_qr=$request->kode_qr;
-                }
-                $image = $request->file('file');
-                $imageFileName =$kode_anggota.'.'.$image->getClientOriginalExtension();
-                $filePath =$imageFileName;
-                $file =\Storage::disk('public_icon');
-                if($file->put($filePath, file_get_contents($image))){
-                    $save=Barang::create([
-                        'kode_barang'=>$kode_barang,
-                        'kode_qr'=>$kode_qr,
-                        'nama_barang'=>$request->nama_barang,
-                        'satuan'=>$request->satuan,
-                        'harga_modal'=>ubah_uang($request->harga_modal),
-                        'harga_jual'=>ubah_uang($request->harga_jual),
-                        'file'=>$filePath,
+                    $no_register=no_register();
+                    if($request->email!=""){
+                        $email=$request->email;
+                    }else{
+                        $email=$no_register.'@gmail.com';
+                    }
+                    $save=Anggota::create([
+                        'nama'=>$request->nama,
+                        'no_register'=>$no_register,
+                        'perusahaan'=>$request->perusahaan,
+                        'email'=>$email,
+                        'no_hp'=>$request->no_hp,
                         'active'=>1,
+                        'bulan'=>date('m'),
+                        'tahun'=>date('Y'),
+                        'tgl_masuk'=>date('Y-m-d'),
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        
+                    ]);
+
+                    $saveuser=User::UpdateOrcreate([
+                        'username'=>$no_register,
+                    ],[
+                        'name'=>$request->nama,
+                        'email'=>$email,
+                        'role_id'=>4,
+                        'sts_anggota'=>1,
+                        'active'=>1,
+                        'password'=>Hash::make('admin'),
                         'created_at'=>date('Y-m-d H:i:s'),
                         
                     ]);
                     echo'@ok';
                    
-                }
+                
                 
             }else{
-                $mst=Barang::where('id',$request->id)->first();
-                $save=Barang::UpdateOrcreate([
+                $mst=Anggota::where('id',$request->id)->first();
+                $save=Anggota::UpdateOrcreate([
                     'id'=>$request->id,
                 ],[
-                    'nama_barang'=>$request->nama_barang,
-                    'satuan'=>$request->satuan,
-                    'harga_modal'=>ubah_uang($request->harga_modal),
-                    'harga_jual'=>ubah_uang($request->harga_jual),
+                    'nama'=>$request->nama,
+                    'no_hp'=>$request->no_hp,
+                    'perusahaan'=>$request->perusahaan,
                     'updated_at'=>date('Y-m-d H:i:s'),
                     
                 ]);
-                if($request->file!=""){
-                    $image = $request->file('file');
-                    $imageFileName =$mst->kode_anggota.'.'.$image->getClientOriginalExtension();
-                    $filePath =$imageFileName;
-                    $file =\Storage::disk('public_icon');
-                    if($file->put($filePath, file_get_contents($image))){
-                        $savefile=Barang::UpdateOrcreate([
-                            'id'=>$request->id,
-                        ],[
-                            'file'=>$filePath,
-                            'updated_at'=>date('Y-m-d H:i:s'),
-                            
-                        ]);
-                    }
-                }
+                $saveuser=User::UpdateOrcreate([
+                    'username'=>$mst->no_register,
+                ],[
+                    'name'=>$request->nama,
+                    'updated_at'=>date('Y-m-d H:i:s'),
+                    
+                ]);
                 echo'@ok';
                 
             }

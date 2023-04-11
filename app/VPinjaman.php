@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Pinjaman extends Model
+class VPinjaman extends Model
 {
-    protected $table = 'pinjaman';
+    protected $table = 'view_pinjaman';
     public $timestamps = false;
     protected $guarded = ['id'];
 }

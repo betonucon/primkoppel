@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\GajiController;
-use App\Http\Controllers\SimpananwajibController;
+use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\SimpanansukarelaController;
+use App\Http\Controllers\SimpananpokokController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\RiwayatpinjamanController;
 use App\Http\Controllers\HomeController;
@@ -56,7 +57,7 @@ Route::group(['prefix' => 'barang','middleware'    => 'auth'],function(){
     Route::get('/view_file',[BarangController::class, 'view_file']);
     Route::get('/cari_anggota',[BarangController::class, 'cari_anggota']);
     Route::post('/',[BarangController::class, 'save_data']);
-    Route::post('/hapus',[BarangController::class, 'hapus_data']);
+    Route::get('/delete',[BarangController::class, 'hapus_data']);
 });
 
 Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){
@@ -69,7 +70,24 @@ Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){
     Route::get('/view_file',[AnggotaController::class, 'view_file']);
     Route::get('/cari_anggota',[AnggotaController::class, 'cari_anggota']);
     Route::post('/',[AnggotaController::class, 'save_data']);
-    Route::post('/hapus',[AnggotaController::class, 'hapus_data']);
+    Route::get('/delete',[AnggotaController::class, 'hapus_data']);
+});
+Route::group(['prefix' => 'simpanan','middleware'    => 'auth'],function(){
+    Route::get('/',[SimpananController::class, 'index']);
+    Route::get('/tambah_wajib',[SimpananController::class, 'tambah_wajib']);
+    Route::get('/store_wajib',[SimpananController::class, 'store_wajib']);
+    Route::post('/store_sukarela',[SimpananController::class, 'store_sukarela']);
+    Route::get('/tambah',[SimpananController::class, 'tambah']);
+    Route::get('/get_import',[SimpananController::class, 'get_import']);
+    Route::get('/get_user',[SimpananController::class, 'get_user']);
+    Route::get('/cari_qr',[SimpananController::class, 'cari_qr']);
+    Route::get('/get_data',[SimpananController::class, 'get_data']);
+    Route::get('/get_data_wajib',[SimpananController::class, 'get_data_wajib']);
+    Route::get('/get_data_sukarela',[SimpananController::class, 'get_data_sukarela']);
+    Route::get('/view_file',[SimpananController::class, 'view_file']);
+    Route::get('/cari_anggota',[SimpananController::class, 'cari_anggota']);
+    Route::post('/',[SimpananController::class, 'save_data']);
+    Route::get('/hapus_wajib',[SimpananController::class, 'hapus_wajib']);
 });
 
 Route::group(['prefix' => 'wajib','middleware'    => 'auth'],function(){
@@ -97,6 +115,46 @@ Route::group(['prefix' => 'sukarela','middleware'    => 'auth'],function(){
     Route::post('/',[SimpanansukarelaController::class, 'save_data']);
     Route::post('/hapus',[SimpanansukarelaController::class, 'hapus_data']);
 });
+Route::group(['prefix' => 'pokok','middleware'    => 'auth'],function(){
+    Route::get('/',[SimpananpokokController::class, 'index']);
+    Route::get('/tambah',[SimpananpokokController::class, 'tambah']);
+    Route::get('/get_import',[SimpananpokokController::class, 'get_import']);
+    Route::get('/get_user',[SimpananpokokController::class, 'get_user']);
+    Route::get('/cari_qr',[SimpananpokokController::class, 'cari_qr']);
+    Route::get('/get_data',[SimpananpokokController::class, 'get_data']);
+    Route::get('/view_file',[SimpananpokokController::class, 'view_file']);
+    Route::get('/cari_anggota',[SimpananpokokController::class, 'cari_anggota']);
+    Route::post('/',[SimpananpokokController::class, 'save_data']);
+    Route::post('/hapus',[SimpananpokokController::class, 'hapus_data']);
+});
+Route::group(['prefix' => 'pinjaman','middleware'    => 'auth'],function(){
+    Route::get('/',[PinjamanController::class, 'index']);
+    Route::get('/riwayat',[PinjamanController::class, 'index_riwayat']);
+    Route::get('/tambah',[PinjamanController::class, 'tambah']);
+    Route::get('/get_import',[PinjamanController::class, 'get_import']);
+    Route::get('/get_detail_import',[PinjamanController::class, 'get_detail_import']);
+    Route::get('/get_user',[PinjamanController::class, 'get_user']);
+    Route::get('/cari_qr',[PinjamanController::class, 'cari_qr']);
+    Route::get('/get_data',[PinjamanController::class, 'get_data']);
+    Route::get('/get_data_riwayat',[PinjamanController::class, 'get_data_riwayat']);
+    Route::get('/view_file',[PinjamanController::class, 'view_file']);
+    Route::get('/cari_anggota',[PinjamanController::class, 'cari_anggota']);
+    Route::post('/',[PinjamanController::class, 'save_data']);
+    Route::post('/hapus',[PinjamanController::class, 'hapus_data']);
+});
+Route::group(['prefix' => 'Pinjaman','middleware'    => 'auth'],function(){
+    Route::get('/',[PinjamanController::class, 'index']);
+    Route::get('/tambah',[PinjamanController::class, 'tambah']);
+    Route::get('/get_import',[PinjamanController::class, 'get_import']);
+    Route::get('/get_detail_import',[PinjamanController::class, 'get_detail_import']);
+    Route::get('/get_user',[PinjamanController::class, 'get_user']);
+    Route::get('/cari_qr',[PinjamanController::class, 'cari_qr']);
+    Route::get('/get_data',[PinjamanController::class, 'get_data']);
+    Route::get('/view_file',[PinjamanController::class, 'view_file']);
+    Route::get('/cari_anggota',[PinjamanController::class, 'cari_anggota']);
+    Route::post('/',[PinjamanController::class, 'save_data']);
+    Route::post('/hapus',[PinjamanController::class, 'hapus_data']);
+});
 
 Route::group(['middleware'    => 'auth'],function(){
     Route::get('Gaji',[GajiController::class, 'index']);
@@ -106,54 +164,8 @@ Route::group(['middleware'    => 'auth'],function(){
 });
 
 Route::group(['middleware'    => 'auth'],function(){
-    Route::get('HOME',[HomeController::class, 'index']);
+    Route::get('home',[HomeController::class, 'index']);
     Route::get('/',[HomeController::class, 'index']);
 });
 
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Pinjaman',[PinjamanController::class, 'index']);
-    Route::get('PinjamanTransfer',[PinjamanController::class, 'index_pencairan']);
-    Route::get('PinjamanTransfer/cetak',[PinjamanController::class, 'cetak_transfer']);
-    Route::get('Pinjaman/approve',[PinjamanController::class, 'approve']);
-    Route::Post('Pinjaman/approve',[PinjamanController::class, 'proses_approve']);
-    Route::Post('Pinjaman/simpan',[PinjamanController::class, 'simpan']);
-    Route::Post('Pinjaman/verifikasi_cair',[PinjamanController::class, 'verifikasi_cair']);
-});
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Transaksi',[TransaksiController::class, 'index']);
-    Route::get('Saldopinjaman',[TransaksiController::class, 'index_pinjaman']);
-    Route::get('Saldopinjaman/get_data',[TransaksiController::class, 'get_data_pinjaman']);
-    Route::get('Transaksi/get_data',[TransaksiController::class, 'get_data']);
-    Route::post('Transaksi/simpan',[TransaksiController::class, 'simpan']);
-    Route::post('Simpanansaldo',[TransaksiController::class, 'simpan_saldo']);
-});
 
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('TransaksiPinjaman',[TransaksipinjamanController::class, 'index']);
-    Route::get('TransaksiPinjaman/export_excel_pinjaman',[TransaksipinjamanController::class, 'export_excel_pinjaman']);
-    Route::get('TransaksiPinjaman/tampil_tagihan',[TransaksipinjamanController::class, 'tampil_tagihan']);
-    Route::get('TransaksiPinjaman/view_tagihan',[TransaksipinjamanController::class, 'view_tagihan']);
-    
-    Route::Post('TransaksiPinjaman/proses_tagihan',[TransaksipinjamanController::class, 'proses_tagihan']);
-    Route::Post('TransaksiPinjaman/proses_bayar',[TransaksipinjamanController::class, 'proses_bayar']);
-    Route::Post('TransaksiPinjaman/approve',[TransaksipinjamanController::class, 'proses_approve']);
-});
-
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Riwayatpinjaman',[RiwayatpinjamanController::class, 'index']);
-});
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Simpananwajib',[SimpananwajibController::class, 'index']);
-    Route::get('Simpananwajib/view_tagihan',[SimpananwajibController::class, 'view_tagihan']);
-    Route::get('Simpananwajib/hapus_tagihan',[SimpananwajibController::class, 'hapus_tagihan']);
-    Route::Post('Simpananwajib',[SimpananwajibController::class, 'save']);
-    Route::Post('Simpananwajib/import',[SimpananwajibController::class, 'import_data_simpan']);
-});
-Route::group(['middleware'    => 'auth'],function(){
-    Route::get('Simpanansukarela',[SimpanansukarelaController::class, 'index']);
-    Route::get('Simpanansukarela/view_tagihan',[SimpanansukarelaController::class, 'view_tagihan']);
-    Route::Post('Simpanansukarela',[SimpanansukarelaController::class, 'save']);
-    Route::Post('Simpanansukarela/import',[SimpanansukarelaController::class, 'import_data_simpan']);
-});
-
-Route::get('/home', 'HomeController@index')->name('home');

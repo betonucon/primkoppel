@@ -189,6 +189,40 @@
 			$('#tampil_file').load("{{url('barang/view_file')}}?file="+file+"&kode_qr="+kode_qr);
 			
 		}
+		function delete_data(id){
+           
+           swal({
+               title: "Yakin menghapus data ini ?",
+               text: "",
+               type: "warning",
+               icon: "info",
+               showCancelButton: true,
+               align:"center",
+               confirmButtonClass: "btn-danger",
+               confirmButtonText: "Yes, delete it!",
+               closeOnConfirm: false
+           }).then((willDelete) => {
+               if (willDelete) {
+                       $.ajax({
+                           type: 'GET',
+                           url: "{{url('barang/delete')}}",
+                           data: "id="+id,
+                           success: function(msg){
+                               swal("Success! berhasil terhapus!", {
+                                   icon: "success",
+                               });
+                               var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('barang/get_data')}}").load();
+                           }
+                       });
+                   
+                   
+               } else {
+                   
+               }
+           });
+           
+        }
 		function simpan_data(){
                 
 				var form=document.getElementById('mydata');

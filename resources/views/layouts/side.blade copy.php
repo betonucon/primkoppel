@@ -31,16 +31,40 @@
 							<span>Simpanan Anggota</span>
 						</a>
 					</li>
-					
+					<li class="has-sub">
+						<a href="{{url('Pinjaman')}}">
+							{!! notifikasi_pengajuan() !!}
+							<i class="fa fa-list"></i>
+							<span>Pengajuan Pinjaman</span>
+						</a>
+					</li>
+					<li class="has-sub">
+						<a href="{{url('TransaksiPinjaman')}}">
+							<i class="fa fa-list"></i>
+							<span>Daftar Pinjaman</span>
+						</a>
+					</li>
+					<li class="has-sub">
+						<a href="{{url('Transaksi')}}">
+							<i class="fa fa-list"></i>
+							<span>Transaksi Keuangan</span>
+						</a>
+					</li>
+					<li class="has-sub">
+						<a href="{{url('Gaji')}}">
+							<i class="fa fa-list"></i>
+							<span>Gaji KMS</span>
+						</a>
+					</li>
 					<li class="has-sub">
 						<a href="javascript:;">
 							<b class="caret"></b>
 							<i class="fa fa-briefcase"></i>
-							<span>Daftar Pinjaman</span> 
+							<span>Simpanan Anggota</span> 
 						</a>
 						<ul class="sub-menu">
-							<li><a href="{{url('pinjaman')}}">Pinjaman </a></li>
-							<li><a href="{{url('pinjaman/riwayat')}}">Riwayat Pinjaman</a></li>
+							<li><a href="{{url('Simpananwajib')}}">Wajib <i class="fa fa-paper-plane text-theme"></i></a></li>
+							<li><a href="{{url('Simpanansukarela')}}">Sukarela<i class="fa fa-paper-plane text-theme"></i></a></li>
 							
 						</ul>
 					</li>

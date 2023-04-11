@@ -5,7 +5,7 @@
 			<i class="far fa-square fa-stack-2x"></i>
 			<i class="fas fa-pencil-alt fa-stack-1x"></i>
 		</span> 
-		Form Anggota
+		Form Simpanan Sukarela
 	</label>
 	
 </div>
@@ -14,39 +14,30 @@
 	<label class="col-lg-3 col-form-label text-right">Nama </label>
 	<div class="col-lg-7">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control" style="text-transform:uppercase" name="nama" value="{{$data->nama}}" placeholder="Ketik disini....">
+			<select class="form-control form-control-sm"  name="no_register">
+				<option value="">Pilih---</option>
+				@foreach($data as $no=>$sat)
+					<option value="{{$sat->no_register}}" >{{$sat->name}}  ({{$sat->perusahaan}})</option>
+				@endforeach
+			</select>
 		</div>
 	</div>
 </div>
 <div class="form-group row">
-	<label class="col-lg-3 col-form-label text-right">Perusahaan </label>
-	<div class="col-lg-9">
+	<label class="col-lg-3 col-form-label text-right">Nominal</label>
+	<div class="col-lg-5">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control"  name="perusahaan" value="{{$data->perusahaan}}" placeholder="Ketik disini....">
+			<div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
+			<input type="text" class="form-control" name="nominal" id="nominal" placeholder="Ketik disini....">
 		</div>
 	</div>
-</div>
-<div class="form-group row">
-	<label class="col-lg-3 col-form-label text-right">Email </label>
-	<div class="col-lg-8">
-		<div class="input-group input-group-sm">
-			<input type="text" class="form-control"  name="email" value="{{$data->email}}" placeholder="Ketik disini....">
-		</div>
-	</div>
-</div>
-<div class="form-group row">
-	<label class="col-lg-3 col-form-label text-right">No Handphone </label>
-	<div class="col-lg-6">
-		<div class="input-group input-group-sm">
-			<input type="text" class="form-control"  name="no_hp" value="{{$data->no_hp}}" placeholder="Ketik disini....">
-		</div>
-	</div>
+	
 </div>
 
 <script>
 
 	$("#notif_cek").hide();
-	$("#harga_modal").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
+	$("#nominal").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 	$("#harga_jual").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 	function show_qr(text){
 		$.ajax({

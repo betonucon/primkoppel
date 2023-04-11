@@ -102,6 +102,18 @@ function total_anggota(){
    $data=App\Anggota::where('cost',Auth::user()['cost'])->where('status',1)->count();
    return $data;
 }
+function pinjaman_active(){
+  $data=App\VPinjaman::whereIn('sts_pinjaman',array(1,2))->orWhere('status_nya',0)->count();
+   return $data;
+}
+function saldo_pinjaman_active(){
+  $data=App\VPinjaman::whereIn('sts_pinjaman',array(1,2))->orWhere('status_nya',0)->sum('nominal');
+   return $data;
+}
+function saldo_pinjaman_terbayar(){
+  $data=App\VPinjaman::whereIn('sts_pinjaman',array(1,2))->orWhere('status_nya',0)->sum('terbayar');
+   return $data;
+}
 function notifikasi_pengajuan(){
    if(Auth::user()['role_id']==1){
       $app=App\Pinjaman::where('sts_pinjaman',3)->count();
@@ -408,6 +420,17 @@ function get_kategori_transaksi(){
    
    return $data;
 }
+function data_simpanan_wajib($no_register,$bulan,$tahun){
+   
+  $cek=App\Simpananwajib::where('no_register',$no_register)->where('bulan',$bulan)->where('tahun',$tahun)->count();
+  if($cek>0){
+      $data=App\Simpananwajib::where('no_register',$no_register)->where('bulan',$bulan)->where('tahun',$tahun)->firstOrfail();
+      return $data->id;
+   }else{
+      return 0;
+   }
+   
+}
 
 function bln($id){
    if($id>9){
@@ -434,6 +457,10 @@ function blnfull($id){
    return bulan($data);
 }
 
+function nilai_wajib(){
+   $data=100000;
+   return $data;
+}
 function kode_barang(){
     
    $cek=App\Barang::count();
@@ -444,6 +471,19 @@ function kode_barang(){
        $nomor='B'.sprintf("%06s",  $urutan);
    }else{
        $nomor='B'.sprintf("%06s",  1);
+   }
+   return $nomor;
+}
+function no_register(){
+    
+   $cek=App\Anggota::where('tahun',date('Y'))->count();
+   if($cek>0){
+       $mst=App\Anggota::where('tahun',date('Y'))->orderBy('no_register','Desc')->firstOrfail();
+       $urutan = (int) substr($mst['no_register'], 2, 5);
+       $urutan++;
+       $nomor=date('y').sprintf("%05s",  $urutan);
+   }else{
+       $nomor=date('y').sprintf("%05s",  1);
    }
    return $nomor;
 }

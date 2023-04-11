@@ -14,7 +14,7 @@
 					processing: false,
 					ordering: false,
 					serverSide: false,
-					ajax:"{{ url('pinjaman/get_data')}}",
+					ajax:"{{ url('pinjaman/get_data_riwayat')}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -92,43 +92,6 @@
 						<!-- end panel-heading -->
 						<!-- begin panel-body -->
 						<div class="panel-body">
-								<div class="row" style="margin-bottom:2%">
-									
-									
-									<div class="col-sm-4">
-										<div class="widget widget-stats bg-gradient-blue m-b-10">
-											<div class="stats-icon stats-icon-lg"><i class="fa fa-dollar-sign fa-fw"></i></div>
-											<div class="stats-content">
-												<div class="stats-title">TOTAL PINJAMAN ACTIVE</div>
-												<div class="stats-number">{{pinjaman_active()}}</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="widget widget-stats bg-gradient-orange m-b-10">
-											<div class="stats-icon stats-icon-lg"><i class="fa fa-dollar-sign fa-fw"></i></div>
-											<div class="stats-content">
-												<div class="stats-title">SALDO PINJAMAN</div>
-												<div class="stats-number">{{uang(saldo_pinjaman_active())}}</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="widget widget-stats bg-gradient-grey m-b-10">
-											<div class="stats-icon stats-icon-lg"><i class="fa fa-dollar-sign fa-fw"></i></div>
-											<div class="stats-content">
-												<div class="stats-title">SALDO TERBAYAR</div>
-												<div class="stats-number">{{uang(saldo_pinjaman_terbayar())}}</div>
-												
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-12">
-										<a href="javascript:;" class="btn btn-blue btn-sm m-r-2" onclick="tambah(`0`)"><i class="fa fa-plus"></i> Tambah Pinjaman</a>
-									</div>
-								</div>
 								
 								<form id="data-all" action="{{url('/Warga/hapus')}}" method="post" enctype="multipart/form-data">
 									@csrf
@@ -167,7 +130,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                             </div>
                             <div class="modal-body">
-								<form  class="form-horizontal " id="mydata" action="{{url('/pinjaman/')}}" method="post" enctype="multipart/form-data">
+								<form  class="form-horizontal " id="mydata" action="{{url('/Warga/')}}" method="post" enctype="multipart/form-data">
                                     @csrf
 									
                                     	<div id="tampil_tambah"></div>
@@ -247,7 +210,7 @@
                                    icon: "success",
                                });
                                var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('anggota/get_data')}}").load();
+                                tables.ajax.url("{{ url('anggota/get_data_riwayat')}}").load();
                            }
                        });
                    
@@ -263,7 +226,7 @@
 				var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('pinjaman/') }}",
+					url: "{{ url('anggota/') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -278,7 +241,7 @@
 							$('#modal-tambah').modal('hide');
 							$('#tampil_tambah').html("");
 							var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('pinjaman/get_data')}}").load();
+                                tables.ajax.url("{{ url('anggota/get_data_riwayat')}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							
