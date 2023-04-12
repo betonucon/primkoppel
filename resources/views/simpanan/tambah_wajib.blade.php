@@ -4,6 +4,7 @@
 		<thead>
 			<tr>
 				<th>No</th>
+				<th width="5%"></th>
 				<th>NO REGISTER</th>
 				<th>NAMA</th>
 				<th>PERUSAHAAN</th>
@@ -22,8 +23,10 @@
 				<tr >
 					@if(data_simpanan_wajib($o->no_register,$bulan,$tahun)>0)
 						<td style="background:{{$color}}"><span class="btn btn-danger btn-xs" onclick="hapus_wajib({{data_simpanan_wajib($o->no_register,$bulan,$tahun)}},`{{$bulan}}`,{{$tahun}})">Hapus</span></td>
+						<td style="background:{{$color}}"></td>
 					@else
-						<td style="background:{{$color}}"><span class="btn btn-primary btn-xs" onclick="proses_wajib(`{{$o->no_register}}`,`{{$bulan}}`,{{$tahun}})">Proses</span></td>
+						<td style="background:{{$color}}"><span class="btn btn-primary btn-xs" onclick="proses_wajib(`{{$o->no_register}}`,`{{$bulan}}`,{{$tahun}},`{{$perusahaan}}`)">Proses</span></td>
+						<td style="background:{{$color}}"><input type="checkbox" name="no_register[]" value="{{$o->no_register}}"></td>
 					@endif
 					
 					<td style="background:{{$color}}">{{$o->no_register}}</td>

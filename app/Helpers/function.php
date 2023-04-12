@@ -11,8 +11,7 @@ function aplikasi()
 }
 function name_app()
 {
-   $data=App\Cost::where('id',Auth::user()['cost'])->first();
-   return $data['name'];
+   return 'PRIMKOPPEL';
 }
 function bulan($bulan)
 {
@@ -258,6 +257,10 @@ function get_satuan(){
    $data=App\Satuan::orderBy('satuan','Desc')->get();
    return $data;
 }
+function get_perusahaan(){
+   $data=App\VPerusahaan::orderBy('perusahaan','Desc')->get();
+   return $data;
+}
 function ubah_int($nilai){
    $patr='/([^0-9]+)/';
    $data=preg_replace($patr,'',$nilai);
@@ -303,15 +306,28 @@ function get_pengajuan_cair(){
    return $data;
 }
 
-function saldo_simpananwajib($nik){
-   $cek=App\Simpananwajib::where('nik',$nik)->count();
-   if($cek>0){
-      $masuk=App\Simpananwajib::where('nik',$nik)->where('sts',1)->sum('nominal');
-      $keluar=App\Simpananwajib::where('nik',$nik)->where('sts',2)->sum('nominal');
-      $data=$masuk-$keluar;
-   }else{
-      $data='0';
-   }
+function saldo_wajib_all(){
+   
+   $masuk=App\Simpananwajib::where('sts',1)->sum('nominal');
+   $keluar=App\Simpananwajib::where('sts',2)->sum('nominal');
+   $data=$masuk-$keluar;
+   
+   return $data;
+}
+function saldo_pokok_all(){
+   
+   $masuk=App\Simpananpokok::where('sts',1)->sum('nominal');
+   $keluar=App\Simpananpokok::where('sts',2)->sum('nominal');
+   $data=$masuk-$keluar;
+   
+   return $data;
+}
+function saldo_sukarela_all(){
+   
+   $masuk=App\Simpanansukarela::where('sts',1)->sum('nominal');
+   $keluar=App\Simpanansukarela::where('sts',2)->sum('nominal');
+   $data=$masuk-$keluar;
+   
    return $data;
 }
 function total_simpananwajib(){

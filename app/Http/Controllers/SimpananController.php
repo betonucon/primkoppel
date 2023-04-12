@@ -98,11 +98,26 @@ class SimpananController extends Controller
     }
     public function tambah_wajib(request $request){
         error_reporting(0);
-        $bulan=$request->bulan;
-        $tahun=$request->tahun;
        
-        $data=VUser::where('sts_anggota',1)->orderBy('perusahaan','Asc')->get();
-        return view('simpanan.tambah_wajib',compact('data','bulan','tahun'));
+        if($request->bulan==""){
+            $bulan=date('m');
+        }else{
+            $bulan=$request->bulan;
+        }
+        if($request->tahun==""){
+            $tahun=date('Y');
+        }else{
+            $tahun=$request->tahun;
+        }
+        if($request->perusahaan==""){
+            $perusahaan='ASDP';
+        }else{
+            $perusahaan=$request->perusahaan;
+        }
+        
+       
+        $data=VUser::where('sts_anggota',1)->where('perusahaan','LIKE','%'.$perusahaan.'%')->orderBy('perusahaan','Asc')->get();
+        return view('simpanan.tambah_wajib',compact('data','bulan','tahun','perusahaan'));
     }
     public function view_file(request $request){
         error_reporting(0);
@@ -278,7 +293,47 @@ class SimpananController extends Controller
             'created_at'=>date('Y-m-d H:i:s'),
             
         ]);
-        echo'@'.$request->bulan.'@'.$request->tahun;
+        echo'@'.$request->bulan.'@'.$request->tahun.'@'.$request->perusahaan;
+    }
+    public function save_wajib_all(request $request){
+        error_reporting(0);
+        $count=count((array) $request->no_register);
+        $nomor='M'.date('ymd000001');
+        if($count>0){
+            for($x=0;$x<$count;$x++){
+                $save=Simpananwajib::UpdateOrcreate([
+                    'no_register'=>$request->no_register[$x],
+                    'bulan'=>$request->bulan,
+                    'tahun'=>$request->tahun,
+                ],[
+                    'nomortransaksi'=>$nomor,
+                    'nominal'=>nilai_wajib(),
+                    'kategori_status'=>1,
+                    'sts'=>1,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    
+                ]);
+            }
+            echo'@ok@'.$request->bulan.'@'.$request->tahun.'@'.$request->perusahaan;
+        }else{
+            echo'<div style="padding:1%;background:##f3f3f3">Error !<br> Ceklis Data Anggota</div>';
+        }
+        
+
+        // $nomor='M'.date('ymd000001');
+        // $save=Simpananwajib::UpdateOrcreate([
+        //     'no_register'=>$request->no_register,
+        //     'bulan'=>$request->bulan,
+        //     'tahun'=>$request->tahun,
+        // ],[
+        //     'nomortransaksi'=>$nomor,
+        //     'nominal'=>nilai_wajib(),
+        //     'kategori_status'=>1,
+        //     'sts'=>1,
+        //     'created_at'=>date('Y-m-d H:i:s'),
+            
+        // ]);
+        
     }
 
     

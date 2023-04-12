@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>KOPERASI MITRA SEJAHTERA</title>
+	<title>{{name_app()}}</title>
 	<link rel="icon" href="{{url('public/img/kopkar.png')}}">
 	<link rel="icon" href="https://www.krakatausteel.com/public/images/fav.png">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />

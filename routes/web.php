@@ -127,6 +127,7 @@ Route::group(['prefix' => 'simpanan','middleware'    => 'auth'],function(){
     Route::get('/view_file',[SimpananController::class, 'view_file']);
     Route::get('/cari_anggota',[SimpananController::class, 'cari_anggota']);
     Route::post('/',[SimpananController::class, 'save_data']);
+    Route::post('/store_wajib_all',[SimpananController::class, 'save_wajib_all']);
     Route::get('/hapus_wajib',[SimpananController::class, 'hapus_wajib']);
 });
 

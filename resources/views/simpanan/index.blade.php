@@ -244,26 +244,40 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                             </div>
                             <div class="modal-body">
-								<form  class="form-horizontal " id="mydata" action="{{url('/Warga/')}}" method="post" enctype="multipart/form-data">
+								<form  class="form-horizontal " id="mydatawajib" action="{{ url('simpanan/store_wajib_all') }}" method="post" enctype="multipart/form-data">
                                     @csrf
+									<input type="submit">
 									<div class="row">
-										<div class="col-lg-5">
+										<div class="col-lg-3">
+											<div class="input-group input-group-sm">
+												<select class="form-control form-control-sm" onchange="pilih_perusahaan(this.value)"  name="perusahaan" id="perusahaan">
+												<option value="ASDP">ASDP</option>	
+												@foreach(get_perusahaan() as $per)
+														<option value="{{$per->perusahaan}}">{{$per->perusahaan}}</option>
+													@endforeach
+												</select>
+											</div>
+										</div>
+										<div class="col-lg-3">
 											<div class="input-group input-group-sm">
 												<select class="form-control form-control-sm" onchange="pilih_bulan(this.value)"  name="bulan" id="bulan">
 													@for($x=1;$x<13;$x++)
-														<option value="{{ubah_bulan($x)}}">{{bulan(ubah_bulan($x))}}</option>
+														<option value="{{ubah_bulan($x)}}" @if(date('m')==ubah_bulan($x)) selected @endif >{{bulan(ubah_bulan($x))}}</option>
 													@endfor
 												</select>
 											</div>
 										</div>
-										<div class="col-lg-5">
+										<div class="col-lg-3">
 											<div class="input-group input-group-sm">
 												<select class="form-control form-control-sm"  onchange="pilih_tahun(this.value)" name="tahun" id="tahun">
 													@for($x=2022;$x<(date('Y')+1);$x++)
-														<option value="{{$x}}">{{$x}}</option>
+														<option value="{{$x}}"  @if(date('Y')==$x) selected @endif >{{$x}}</option>
 													@endfor
 												</select>
 											</div>
+										</div>
+										<div class="col-lg-3">
+											<span class="btn btn-primary" onclick="proses_wajib_all()">Proses Seleksi</span>
 										</div>
 										<div class="col-lg-12">
                                     		<div id="tampil_tambah_wajib"></div>
@@ -390,6 +404,10 @@
 			$('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bulan+"&tahun="+tahun);
 			
 		}
+		function pilih_perusahaan(perusahaan){
+			$('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?perusahaan="+perusahaan);
+			
+		}
 		function pilih_tahun(tahun){
 			var bulan=$('#bulan').val();
 			$('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bulan+"&tahun="+tahun);
@@ -467,7 +485,7 @@
                                    icon: "success",
                                });
 							   var bat=msg.split('@');
-                               $('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bat[1]+"&tahun="+bat[2]);
+                               $('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bat[1]+"&tahun="+bat[2]+"&perusahaan="+bat[3]);
                            }
                        });
                    
@@ -499,6 +517,57 @@
 							$('#tampil_tambah').html("");
 							var tables=$('#data-table-default').DataTable();
                                 tables.ajax.url("{{ url('anggota/get_data')}}").load();
+						}else{
+							document.getElementById("loadnya").style.width = "0px";
+							
+							swal({
+								title: 'Notifikasi',
+							
+								html:true,
+								text:'ss',
+								icon: 'error',
+								buttons: {
+									cancel: {
+										text: 'Tutup',
+										value: null,
+										visible: true,
+										className: 'btn btn-dangers',
+										closeModal: true,
+									},
+									
+								}
+							});
+							$('.swal-text').html('<div style="width:100%;background:#f2f2f5;padding:1%;text-align:left;font-size:13px">'+msg+'</div>')
+						}
+						
+						
+					}
+				
+				});
+		}
+		function proses_wajib_all(){
+                
+				var form=document.getElementById('mydatawajib');
+				$.ajax({
+					type: 'POST',
+					url: "{{ url('simpanan/store_wajib_all') }}",
+					data: new FormData(form),
+					contentType: false,
+					cache: false,
+					processData:false,
+					beforeSend: function() {
+						document.getElementById("loadnya").style.width = "100%";
+					},
+					success: function(msg){
+						var bat=msg.split('@');
+						if(bat[1]=='ok'){
+							document.getElementById("loadnya").style.width = "0px";
+							swal("Success! berhasil diproses", {
+								icon: "success",
+							});
+							$('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bat[2]+"&tahun="+bat[3]+"&perusahaan="+bat[4]);
+							var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('simpanan/get_data')}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							
