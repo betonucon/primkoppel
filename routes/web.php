@@ -129,6 +129,7 @@ Route::group(['prefix' => 'simpanan','middleware'    => 'auth'],function(){
     Route::post('/',[SimpananController::class, 'save_data']);
     Route::post('/store_wajib_all',[SimpananController::class, 'save_wajib_all']);
     Route::get('/hapus_wajib',[SimpananController::class, 'hapus_wajib']);
+    Route::get('/delete_sukarela',[SimpananController::class, 'delete_sukarela']);
 });
 
 Route::group(['prefix' => 'wajib','middleware'    => 'auth'],function(){

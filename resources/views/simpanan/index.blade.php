@@ -116,6 +116,8 @@
                               return meta.row + meta.settings._iDisplayStart + 1;
                             } 
                         },
+						{ data: 'action' },
+						
 						{ data: 'no_register' },
 						{ data: 'nama' },
 						{ data: 'statusnya', className: "text-center" },
@@ -355,6 +357,7 @@
 										<thead>
 											<tr>
 												<th width="5%">No</th>
+												<th width="5%"></th>
 												<th width="15%">NO REGISTER</th>
 												<th class="text-nowrap">NAMA</th>
 												<th class="text-nowrap">STATUS</th>
@@ -452,6 +455,41 @@
                                });
 							   var bat=msg.split('@');
                                $('#tampil_tambah_wajib').load("{{url('simpanan/tambah_wajib')}}?bulan="+bat[1]+"&tahun="+bat[2]);
+                           }
+                       });
+                   
+                   
+               } else {
+                   
+               }
+           });
+           
+        }
+		function delete_sukarela(id,no_register){
+           
+           swal({
+               title: "Yakin menghapus data ini ?",
+               text: "",
+               type: "warning",
+               icon: "info",
+               showCancelButton: true,
+               align:"center",
+               confirmButtonClass: "btn-danger",
+               confirmButtonText: "Yes, delete it!",
+               closeOnConfirm: false
+           }).then((willDelete) => {
+               if (willDelete) {
+                       $.ajax({
+                           type: 'GET',
+                           url: "{{url('simpanan/delete_sukarela')}}",
+                           data: "id="+id+"&no_register="+no_register,
+                           success: function(msg){
+                               swal("Success! berhasil terhapus!", {
+                                   icon: "success",
+                               });
+							   var bat=msg.split('@');
+                               var tablesukarela=$('#data-table-defaultsukarela').DataTable();
+									tablesukarela.ajax.url("{{ url('simpanan/get_data_sukarela')}}?no_register="+bat[1]).load();
                            }
                        });
                    

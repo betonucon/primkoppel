@@ -336,6 +336,19 @@ class PinjamanController extends Controller
                         'created_at'=>date('Y-m-d H:i:s'),
                         
                     ]);
+                    $sukarela=Simpanansukarela::create([
+                        'no_register'=>'admin',
+                   
+                        'nomortransaksi'=>$mst->nomortransaksi,
+                        'transaksi_id'=>$save->id,
+                        'nominal'=>$mst->nilai_koperasi,
+                        'kategori_status'=>2,
+                        'sts'=>1,
+                        'bulan'=>date('m'),
+                        'tahun'=>date('Y'),
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        
+                    ]);
                     echo'@ok';
                 }
                 

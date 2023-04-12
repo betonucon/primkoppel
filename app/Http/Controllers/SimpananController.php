@@ -202,18 +202,7 @@ class SimpananController extends Controller
        
         return  Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function($data){
-                    $btn='
-                            <div class="btn-group btn-group-sm dropup m-r-5">
-								<a href="#" data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">Act <b class="caret"></b></a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a href="javascript:;" class="dropdown-item">Action Button</a>
-									<div class="dropdown-divider"></div>
-                                    <a href="javascript:;" onclick="view_wajib('.$data->no_register.')" class="dropdown-item"><i class="fas fa-search fa-fw"></i> Detail  Wajib</a>
-									<a href="javascript:;" onclick="view_sukarela('.$data->no_register.')"  class="dropdown-item"><i class="fas fa-search fa-fw"></i> Detail  Sukarela</a>
-									
-								</div>
-							</div>
-                    ';
+                    $btn='<span class="btn btn-danger btn-xs" onclick="delete_sukarela('.$data->id.',`'.$data->no_register.'`)">Hapus</span>';
                     return $btn;
                 })
                 ->addColumn('uang_nominal', function($data){
@@ -236,6 +225,11 @@ class SimpananController extends Controller
         error_reporting(0);
         $delanggota=Simpananwajib::where('id',$request->id)->delete();
         echo'@'.$request->bulan.'@'.$request->tahun;
+    }
+    public function delete_sukarela(request $request){
+        error_reporting(0);
+        $delanggota=Simpanansukarela::where('id',$request->id)->delete();
+        echo'@'.$request->no_register.'@';
     }
     public function store_sukarela(request $request){
         error_reporting(0);
