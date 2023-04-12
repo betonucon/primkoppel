@@ -14,7 +14,7 @@
 					processing: false,
 					ordering: false,
 					serverSide: false,
-					ajax:"{{ url('orderstok/get_data')}}",
+					ajax:"{{ url('barang/get_data')}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -22,12 +22,13 @@
                             } 
                         },
 						{ data: 'action', className: "text-center" },
-						{ data: 'no_order' },
-						{ data: 'distributor' },
-						{ data: 'total_barang' , className: "text-center" },
-						{ data: 'uang_total_harga', className: "text-right" },
-						{ data: 'statusnya', className: "text-center" },
-						{ data: 'created_at', className: "text-right" },
+						{ data: 'file', className: "text-center" },
+						{ data: 'kode_barang' },
+						{ data: 'nama_barang' },
+						{ data: 'satuan' , className: "text-center" },
+						{ data: 'uang_harga_modal', className: "text-right" },
+						{ data: 'uang_harga_jual', className: "text-right" },
+						{ data: 'stok', className: "text-right" },
 						
 						
 					],
@@ -80,7 +81,7 @@
 					<div class="panel panel-inverse" data-sortable-id="form-plugins-1">
 						<!-- begin panel-heading -->
 						<div class="panel-heading">
-							<h4 class="panel-title">STOK ORDER</h4>
+							<h4 class="panel-title">MASTER BARANG</h4>
 							<div class="panel-heading-btn">
 								<a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
 							</div>
@@ -101,12 +102,13 @@
 											<tr>
 												<th width="5%">No</th>
 												<th width="5%"></th>
-												<th width="10%">NO ORDER</th>
-												<th class="text-nowrap">DISTRIBUTOR</th>
-												<th width="10%" class="text-nowrap">ITEM</th>
-												<th width="15%" class="text-nowrap">TOTAL</th>
-												<th width="12%" class="text-nowrap">STATUS</th>
-												<th width="14%" class="text-nowrap">WAKTU</th>
+												<th width="5%"></th>
+												<th width="10%">KODE</th>
+												<th class="text-nowrap">NAMA BARANG</th>
+												<th width="10%" class="text-nowrap">SATUAN</th>
+												<th width="15%" class="text-nowrap">HARGA MODAL</th>
+												<th width="15%" class="text-nowrap">HARGA JUAL</th>
+												<th width="10%" class="text-nowrap">STOK</th>
 											</tr>
 											
 										</thead>
@@ -123,7 +125,7 @@
 
 			<div class="row">
 				<div class="modal fade" id="modal-tambah" aria-hidden="true" style="display: none;">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title"></h4>
@@ -174,7 +176,7 @@
 		
 		function tambah(id){
 			$('#modal-tambah').modal('show');
-			$('#tampil_tambah').load("{{url('orderstok/tambah')}}?id="+id);
+			$('#tampil_tambah').load("{{url('barang/tambah')}}?id="+id);
 			
 		}
 		function show_foto(file){
@@ -184,49 +186,15 @@
 		}
 		function show_foto(file,kode_qr){
 			$('#modal-file').modal('show');
-			$('#tampil_file').load("{{url('orderstok/view_file')}}?file="+file+"&kode_qr="+kode_qr);
+			$('#tampil_file').load("{{url('barang/view_file')}}?file="+file+"&kode_qr="+kode_qr);
 			
 		}
-		function delete_data(id){
-           
-           swal({
-               title: "Yakin menghapus data ini ?",
-               text: "",
-               type: "warning",
-               icon: "info",
-               showCancelButton: true,
-               align:"center",
-               confirmButtonClass: "btn-danger",
-               confirmButtonText: "Yes, delete it!",
-               closeOnConfirm: false
-           }).then((willDelete) => {
-               if (willDelete) {
-                       $.ajax({
-                           type: 'GET',
-                           url: "{{url('orderstok/delete')}}",
-                           data: "id="+id,
-                           success: function(msg){
-                               swal("Success! berhasil terhapus!", {
-                                   icon: "success",
-                               });
-                               var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('orderstok/get_data')}}").load();
-                           }
-                       });
-                   
-                   
-               } else {
-                   
-               }
-           });
-           
-        }
 		function simpan_data(){
                 
 				var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('orderstok/') }}",
+					url: "{{ url('barang/') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -237,7 +205,11 @@
 					success: function(msg){
 						var bat=msg.split('@');
 						if(bat[1]=='ok'){
-							location.assign("{{url('orderstok/view')}}?nomor="+bat[2])
+							document.getElementById("loadnya").style.width = "0px";
+							$('#modal-tambah').modal('hide');
+							$('#tampil_tambah').html("");
+							var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('barang/get_data')}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							
@@ -266,6 +238,5 @@
 				
 				});
 		}
-		
 	</script>
 @endpush

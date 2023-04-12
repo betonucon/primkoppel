@@ -5,40 +5,44 @@
 			<i class="far fa-square fa-stack-2x"></i>
 			<i class="fas fa-pencil-alt fa-stack-1x"></i>
 		</span> 
-		Form Simpanan Sukarela
+		Form Pembayaran
 	</label>
 	
 </div>
 
 <div class="form-group row">
-	<label class="col-lg-3 col-form-label text-right">Nama </label>
-	<div class="col-lg-7">
+	<label class="col-lg-3 col-form-label text-right">No Order</label>
+	<div class="col-lg-5">
 		<div class="input-group input-group-sm">
-			<select class="form-control form-control-sm" id="default-select2" name="no_register">
-				<option value="">Pilih---</option>
-				@foreach($data as $no=>$sat)
-					<option value="{{$sat->no_register}}" >{{$sat->name}}  ({{$sat->perusahaan}})</option>
-				@endforeach
-			</select>
+			<input type="text" disabled class="form-control" name="no_order" value="{{$data->no_order}}" placeholder="Ketik disini....">
 		</div>
 	</div>
 </div>
 <div class="form-group row">
-	<label class="col-lg-3 col-form-label text-right">Nominal</label>
-	<div class="col-lg-5">
+	<label class="col-lg-3 col-form-label text-right">Distributor</label>
+	<div class="col-lg-9">
 		<div class="input-group input-group-sm">
-			<div class="input-group-prepend"><span class="input-group-text">Rp.</span></div>
-			<input type="text" class="form-control" name="nominal" id="nominal" placeholder="Ketik disini....">
+			<input type="text" disabled class="form-control" name="distributor" value="{{$data->distributor}}" placeholder="Ketik disini....">
 		</div>
 	</div>
-	
+</div>
+<div class="form-group row">
+	<label class="col-lg-3 col-form-label text-right">Total</label>
+	<div class="col-lg-5">
+		<div class="input-group input-group-sm">
+			<input type="text" disabled class="form-control" name="total_harga" value="{{uang($data->total_harga)}}" placeholder="Ketik disini....">
+		</div>
+	</div>
 </div>
 
 <script>
 
 	$("#notif_cek").hide();
-	$('#default-select2').select2();
-	$("#nominal").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
+	$('#tgl_order').datepicker({
+		autoclose: true,
+		format:'yyyy-mm-dd'
+	});
+	$("#harga_modal").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 	$("#harga_jual").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 	function show_qr(text){
 		$.ajax({

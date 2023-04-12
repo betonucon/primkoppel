@@ -22,7 +22,7 @@
                         headerOffset: $('#header').height()
                     },
                     dom: 'lrtip',
-					ajax:"{{ url('orderstok/get_data_stok')}}?no_transaksi={{$data->no_order}}",
+					ajax:"{{ url('kasir/get_data_stok')}}?no_transaksi={{$data->no_order}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -34,7 +34,8 @@
 						{ data: 'nama_barang' },
 						{ data: 'satuan' , className: "text-center" },
 						{ data: 'uang_qty' , className: "text-center" },
-						{ data: 'uang_harga_modal', className: "text-right" },
+						{ data: 'uang_harga_jual', className: "text-right" },
+						{ data: 'uang_profit', className: "text-right" },
 						{ data: 'uang_total', className: "text-right" },
 						
 						
@@ -69,8 +70,9 @@
 		}();
 
 		$(document).ready(function() {
-			$("#qty").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
+			$("#qtyty").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 			$("#harga_modal").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
+			$("#harga_jual").inputmask({ alias : "currency", prefix: '', 'autoGroup': true, 'digits': 0, 'digitsOptional': false });
 			TableManageDefault.init();
 		});
 
@@ -99,14 +101,14 @@
 								<div class="btn-group btn-group-justified" style="margin-bottom:2%">
 									@if($method==1)
 										<a class="btn btn-default btn-sm active" >QR Code</a>
-										<a class="btn btn-default btn-sm " onclick="location.assign(`{{url('orderstok/view')}}?nomor={{$data->no_order}}&method=2`)">Search By</a>
+										<a class="btn btn-default btn-sm " onclick="location.assign(`{{url('kasir/view')}}?nomor={{$data->no_order}}&method=2`)">Search By</a>
 									@else
 									
-										<a class="btn btn-default btn-sm " onclick="location.assign(`{{url('orderstok/view')}}?nomor={{$data->no_order}}&method=1`)">QR Code</a>
+										<a class="btn btn-default btn-sm " onclick="location.assign(`{{url('kasir/view')}}?nomor={{$data->no_order}}&method=1`)">QR Code</a>
 										<a class="btn btn-default btn-sm active" >Search By</a>
 									@endif
 								</div>
-								<form id="mydata" class="form-horizontal" action="{{url('/orderstok/store_barang')}}" method="post" enctype="multipart/form-data">
+								<form id="mydata" class="form-horizontal" action="{{url('/kasir/store_barang')}}" method="post" enctype="multipart/form-data">
 									@csrf
 									<input type="hidden" name="no_order" value="{{$data->no_order}}">
 									@if($method==1)
@@ -143,22 +145,32 @@
 												<input type="text" class="form-control" disabled  id="kode_barang" value="{{$data->kode_barang}}" placeholder="Ketik disini....">
 											</div>
 										</div>
-										<div class="col-lg-7">
+										<div class="col-lg-1">
+											<div class="input-group input-group-sm">
+												<input type="text" class="form-control" readonly name="stok" id="stok" value="{{$data->stok}}" placeholder="Ketik disini....">
+											</div>
+										</div>
+										<div class="col-lg-6">
 											<div class="input-group input-group-sm">
 												<input type="text" class="form-control" disabled name="nama_barang" id="nama_barang" value="{{$data->nama_barang}}" placeholder="Ketik disini....">
 											</div>
 										</div>
 									</div>
 									<div class="form-group row">
-										<label class="col-lg-2 col-form-label text-right">Qty & Harga</label>
+										<label class="col-lg-2 col-form-label text-right">Qty & Jual & Modal</label>
 										<div class="col-lg-1">
 											<div class="input-group input-group-sm">
-												<input type="text" class="form-control" onkeypress="proses_enter(event)" name="qty" id="qty" value="0" placeholder="Ketik disini....">
+												<input type="text" class="form-control" onkeypress="proses_enter(event)" name="qty" id="qtyty"  placeholder="Ketik disini....">
 											</div>
 										</div>
 										<div class="col-lg-2">
 											<div class="input-group input-group-sm">
-												<input type="text" class="form-control"  name="harga_modal" id="harga_modal" onkeypress="proses_enter(event)" value="{{$data->nama_barang}}" placeholder="Ketik disini....">
+												<input type="text" class="form-control"  name="harga_jual" id="harga_jual" onkeypress="proses_enter(event)" value="{{$data->nama_barang}}" placeholder="Ketik disini....">
+											</div>
+										</div>
+										<div class="col-lg-2">
+											<div class="input-group input-group-sm">
+												<input type="text" class="form-control" disabled name="harga_modal" id="harga_modal" onkeypress="proses_enter(event)" value="{{$data->nama_barang}}" placeholder="Ketik disini....">
 											</div>
 										</div>
 									</div>
@@ -188,6 +200,7 @@
 										<th width="10%" class="text-nowrap">SATUAN</th>
 										<th width="10%" class="text-nowrap">QTY</th>
 										<th width="15%" class="text-nowrap">HARGA </th>
+										<th width="15%" class="text-nowrap">PROFIT </th>
 										<th width="15%" class="text-nowrap">TOTAL</th>
 										
 									</tr>
@@ -253,10 +266,10 @@
 @push('ajax')
 	<script>
 
-		$('#total_harga_kasir').load("{{url('orderstok/total_harga_kasir')}}?id={{$data->id}}");
+		$('#total_harga_kasir').load("{{url('kasir/total_harga_kasir')}}?id={{$data->id}}");
 		function proses_bayar(id){
 			$('#modal-bayar').modal('show');
-			$('#tampil_bayar').load("{{url('orderstok/bayar')}}?id="+id);
+			$('#tampil_bayar').load("{{url('kasir/bayar')}}?id="+id);
 			
 		}
 		$('#default-select2').select2({
@@ -321,14 +334,14 @@
                if (willDelete) {
                        $.ajax({
                            type: 'GET',
-                           url: "{{url('orderstok/delete_barang')}}",
+                           url: "{{url('kasir/delete_barang')}}",
                            data: "id="+id,
                            success: function(msg){
                                swal("Success! berhasil terhapus!", {
                                    icon: "success",
                                });
                                var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('orderstok/get_data_stok')}}?no_transaksi={{$data->no_order}}").load();
+                                tables.ajax.url("{{ url('kasir/get_data_stok')}}?no_transaksi={{$data->no_order}}").load();
                            }
                        });
                    
@@ -345,7 +358,7 @@
                 var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('orderstok/store_barang') }}",
+					url: "{{ url('kasir/store_barang') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -371,9 +384,9 @@
 							@else
 								$('#kode_qr').focus();
 							@endif
-							$('#total_harga_kasir').load("{{url('orderstok/total_harga_kasir')}}?id={{$data->id}}");
+							$('#total_harga_kasir').load("{{url('kasir/total_harga_kasir')}}?id={{$data->id}}");
 							var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('orderstok/get_data_stok')}}?no_transaksi={{$data->no_order}}").load();
+                                tables.ajax.url("{{ url('kasir/get_data_stok')}}?no_transaksi={{$data->no_order}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							
@@ -409,7 +422,7 @@
 				var form=document.getElementById('mydatabayar');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('orderstok/store_bayar') }}",
+					url: "{{ url('kasir/store_bayar') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,

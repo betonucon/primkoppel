@@ -14,7 +14,7 @@
 					processing: false,
 					ordering: false,
 					serverSide: false,
-					ajax:"{{ url('orderstok/get_data')}}",
+					ajax:"{{ url('kasir/get_data')}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -174,7 +174,7 @@
 		
 		function tambah(id){
 			$('#modal-tambah').modal('show');
-			$('#tampil_tambah').load("{{url('orderstok/tambah')}}?id="+id);
+			$('#tampil_tambah').load("{{url('kasir/tambah')}}?id="+id);
 			
 		}
 		function show_foto(file){
@@ -184,7 +184,7 @@
 		}
 		function show_foto(file,kode_qr){
 			$('#modal-file').modal('show');
-			$('#tampil_file').load("{{url('orderstok/view_file')}}?file="+file+"&kode_qr="+kode_qr);
+			$('#tampil_file').load("{{url('kasir/view_file')}}?file="+file+"&kode_qr="+kode_qr);
 			
 		}
 		function delete_data(id){
@@ -203,14 +203,14 @@
                if (willDelete) {
                        $.ajax({
                            type: 'GET',
-                           url: "{{url('orderstok/delete')}}",
+                           url: "{{url('kasir/delete')}}",
                            data: "id="+id,
                            success: function(msg){
                                swal("Success! berhasil terhapus!", {
                                    icon: "success",
                                });
                                var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('orderstok/get_data')}}").load();
+                                tables.ajax.url("{{ url('kasir/get_data')}}").load();
                            }
                        });
                    
@@ -226,7 +226,7 @@
 				var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('orderstok/') }}",
+					url: "{{ url('kasir/') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -237,7 +237,7 @@
 					success: function(msg){
 						var bat=msg.split('@');
 						if(bat[1]=='ok'){
-							location.assign("{{url('orderstok/view')}}?nomor="+bat[2])
+							location.assign("{{url('kasir/view')}}?nomor="+bat[2])
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							

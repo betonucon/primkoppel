@@ -240,6 +240,10 @@ function url_plug(){
    $data=url('public');
    return $data;
 }
+function nama_user($no_register){
+   $data=App\VUser::where('username',$no_register)->firstOrfail();
+   return $data->name;
+}
 function ubah_uang($uang){
    $patr='/([^0-9]+)/';
    $ug=explode('.',$uang);
@@ -406,6 +410,12 @@ function get_tahun_transaksi(){
    
    return $data;
 }
+function get_anggota(){
+   
+  $data=App\VUser::where('sts_anggota',1)->orderBy('name','Asc')->get();
+   
+   return $data;
+}
 
 function get_kategori(){
    
@@ -498,6 +508,19 @@ function no_order(){
        $nomor='S'.date('y').sprintf("%08s",  $urutan);
    }else{
        $nomor='S'.date('y').sprintf("%08s",  1);
+   }
+   return $nomor;
+}
+function no_kasir(){
+    
+   $cek=App\Kasir::where('tahun',date('Y'))->count();
+   if($cek>0){
+       $mst=App\Kasir::where('tahun',date('Y'))->orderBy('no_order','Desc')->firstOrfail();
+       $urutan = (int) substr($mst['no_order'], 3, 8);
+       $urutan++;
+       $nomor='K'.date('y').sprintf("%08s",  $urutan);
+   }else{
+       $nomor='K'.date('y').sprintf("%08s",  1);
    }
    return $nomor;
 }

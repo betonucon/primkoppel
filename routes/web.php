@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\TransaksipinjamanController;
+use App\Http\Controllers\KasirController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\OrderstokController;
@@ -66,6 +67,8 @@ Route::group(['prefix' => 'barang','middleware'    => 'auth'],function(){
 Route::group(['prefix' => 'orderstok','middleware'    => 'auth'],function(){
     Route::get('/',[OrderstokController::class, 'index']);
     Route::get('/tambah',[OrderstokController::class, 'tambah']);
+    Route::get('/total_harga_kasir',[OrderstokController::class, 'total_harga_kasir']);
+    Route::get('/bayar',[OrderstokController::class, 'bayar']);
     Route::get('/view',[OrderstokController::class, 'view']);
     Route::get('/cari_qr',[OrderstokController::class, 'cari_qr']);
     Route::get('/get_data',[OrderstokController::class, 'get_data']);
@@ -74,8 +77,27 @@ Route::group(['prefix' => 'orderstok','middleware'    => 'auth'],function(){
     Route::get('/cari_anggota',[OrderstokController::class, 'cari_anggota']);
     Route::post('/',[OrderstokController::class, 'save_data']);
     Route::post('/store_barang',[OrderstokController::class, 'save_barang']);
+    Route::post('/store_bayar',[OrderstokController::class, 'save_bayar']);
     Route::get('/delete',[OrderstokController::class, 'hapus_data']);
     Route::get('/delete_barang',[OrderstokController::class, 'hapus_barang']);
+});
+
+Route::group(['prefix' => 'kasir','middleware'    => 'auth'],function(){
+    Route::get('/',[KasirController::class, 'index']);
+    Route::get('/tambah',[KasirController::class, 'tambah']);
+    Route::get('/total_harga_kasir',[KasirController::class, 'total_harga_kasir']);
+    Route::get('/bayar',[KasirController::class, 'bayar']);
+    Route::get('/view',[KasirController::class, 'view']);
+    Route::get('/cari_qr',[KasirController::class, 'cari_qr']);
+    Route::get('/get_data',[KasirController::class, 'get_data']);
+    Route::get('/get_data_stok',[KasirController::class, 'get_data_stok']);
+    Route::get('/view_file',[KasirController::class, 'view_file']);
+    Route::get('/cari_anggota',[KasirController::class, 'cari_anggota']);
+    Route::post('/',[KasirController::class, 'save_data']);
+    Route::post('/store_barang',[KasirController::class, 'save_barang']);
+    Route::post('/store_bayar',[KasirController::class, 'save_bayar']);
+    Route::get('/delete',[KasirController::class, 'hapus_data']);
+    Route::get('/delete_barang',[KasirController::class, 'hapus_barang']);
 });
 
 Route::group(['prefix' => 'anggota','middleware'    => 'auth'],function(){

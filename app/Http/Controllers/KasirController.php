@@ -12,14 +12,14 @@ use App\Barang;
 use App\VStok;
 use App\Stok;
 use App\VBarang;
-use App\Orderstok;
-use App\VOrderstok;
+use App\Kasir;
+use App\VKasir;
 use App\User;
-class OrderstokController extends Controller
+class KasirController extends Controller
 {
     public function index(request $request){
         $menu='Daftar Order Stok';
-        return view('orderstok.index',compact('menu'));
+        return view('kasir.index',compact('menu'));
     }
 
     public function cari_qr(request $request){
@@ -40,13 +40,13 @@ class OrderstokController extends Controller
             $read='';
         }
         $data=Barang::where('id',$request->id)->first();
-        return view('orderstok.tambah',compact('data','id','read'));
+        return view('kasir.tambah',compact('data','id','read'));
     }
     public function bayar(request $request){
         error_reporting(0);
         $id=$request->id;
-        $data=VOrderstok::where('id',$request->id)->first();
-        return view('orderstok.bayar',compact('data','id'));
+        $data=VKasir::where('id',$request->id)->first();
+        return view('kasir.bayar',compact('data','id'));
     }
     public function view(request $request){
         error_reporting(0);
@@ -56,12 +56,12 @@ class OrderstokController extends Controller
         }else{
             $method=$request->method;
         }
-        $data=Orderstok::where('no_order',$request->nomor)->first();
-        return view('orderstok.view',compact('data','nomor','read','method'));
+        $data=Kasir::where('no_order',$request->nomor)->first();
+        return view('kasir.view',compact('data','nomor','read','method'));
     }
     public function total_harga_kasir(request $request){
         
-        $data=VOrderstok::where('id',$request->id)->first();
+        $data=VKasir::where('id',$request->id)->first();
         return uang($data->total_harga);
     }
     public function view_file(request $request){
@@ -107,7 +107,7 @@ class OrderstokController extends Controller
                 ->make(true);
     }
     public function get_data_stok(request $request){
-        $data=VStok::where('no_transaksi',$request->no_transaksi)->where('status',1)->orderBy('nama_barang','Asc')->get();
+        $data=VStok::where('no_transaksi',$request->no_transaksi)->where('status',2)->orderBy('nama_barang','Asc')->get();
        
         return  Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function($data){
@@ -123,6 +123,9 @@ class OrderstokController extends Controller
                 })
                 ->addColumn('uang_harga_jual', function($data){
                     return uang($data->harga_jual);
+                })
+                ->addColumn('uang_profit', function($data){
+                    return uang($data->profit);
                 })
                 ->addColumn('uang_total', function($data){
                     return uang($data->total);
@@ -150,9 +153,14 @@ class OrderstokController extends Controller
         
         $rules = [];
         $messages = [];
+        if($request->kategori==1){
+            $rules['konsumen']= 'required';
+            $messages['konsumen .required']= 'Silahkan isi nama konsumen';
+        }else{
+            $rules['no_register']= 'required';
+            $messages['no_register .required']= 'Silahkan isi nama konsumen';
+        }
         
-        $rules['distributor']= 'required';
-        $messages['distributor .required']= 'Silahkan isi nama distributor';
 
         $rules['tgl_order']= 'required|date';
         $messages['tgl_order.required']= 'Masukan tanggal order ';
@@ -172,11 +180,19 @@ class OrderstokController extends Controller
             echo'</div>';
         }else{
             if($request->id==0){
-                $no_order=no_order();
-                $save=Orderstok::create([
+                if($request->kategori==1){
+                    $no_register="K2300001";
+                    $konsumen=$request->konsumen;
+                }else{
+                    $no_register=$request->no_register;
+                    $konsumen=nama_user($request->no_register);
+                }
+                $no_order=no_kasir();
+                $save=Kasir::create([
                     'no_order'=>$no_order,
                     'tgl_order'=>$request->tgl_order,
-                    'distributor'=>$request->distributor,
+                    'no_register'=>$no_register,
+                    'konsumen'=>$konsumen,
                     'status'=>1,
                     'tahun'=>date('Y'),
                     'bulan'=>date('m'),
@@ -214,9 +230,9 @@ class OrderstokController extends Controller
         $messages['qty.not_in']= 'Masukan qty ';
         $messages['qty.numeric']= 'Masukan qty ';
         
-        $rules['harga_modal']= 'required|min:0|not_in:0';
-        $messages['harga_modal.required']= 'Masukan harga modal ';
-        $messages['harga_modal.not_in']= 'Masukan harga modal ';
+        $rules['harga_jual']= 'required|min:0|not_in:0';
+        $messages['harga_jual.required']= 'Masukan harga jual ';
+        $messages['harga_jual.not_in']= 'Masukan harga jual ';
 
         $validator = Validator::make($request->all(), $rules, $messages);
         $val=$validator->Errors();
@@ -233,21 +249,28 @@ class OrderstokController extends Controller
         }else{
             $no_order=$request->no_order;
             $mst=Barang::where('kode_barang',$request->kode_barang)->first();
-            $save=Stok::UpdateOrcreate([
-                'no_transaksi'=>$no_order,
-                'kode_barang'=>$request->kode_barang,
-                'status'=>1,
-            ],[
-                'qty'=>ubah_uang($request->qty),
-                'harga_modal'=>ubah_uang($request->harga_modal),
-                'total_modal'=>(ubah_uang($request->harga_modal)*ubah_uang($request->qty)),
-                'total'=>(ubah_uang($request->harga_modal)*ubah_uang($request->qty)),
-                'harga_jual'=>$mst->harga_jual,
-                'total_jual'=>($mst->harga_jual*ubah_uang($request->qty)),
-                'created_at'=>date('Y-m-d H:i:s'),
-                
-            ]);
-            echo'@ok@';
+            $selisih=(ubah_uang($request->harga_jual)-$mst->harga_modal);
+            $profit=($selisih*ubah_uang($request->qty));
+            if(ubah_uang($request->qty)>$request->stok){
+                echo'<div style="padding:1%;background:##f3f3f3">Error !<br> Stok tidak mencukupi</div>';
+            }else{
+                $save=Stok::UpdateOrcreate([
+                    'no_transaksi'=>$no_order,
+                    'kode_barang'=>$request->kode_barang,
+                    'status'=>2,
+                ],[
+                    'qty'=>ubah_uang($request->qty),
+                    'harga_jual'=>ubah_uang($request->harga_jual),
+                    'total_modal'=>($mst->harga_modal*ubah_uang($request->qty)),
+                    'total'=>(ubah_uang($request->harga_jual)*ubah_uang($request->qty)),
+                    'harga_modal'=>$mst->harga_modal,
+                    'profit'=>$profit,
+                    'total_jual'=>($mst->harga_jual*ubah_uang($request->qty)),
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    
+                ]);
+                echo'@ok@';
+            }
                 
            
         }

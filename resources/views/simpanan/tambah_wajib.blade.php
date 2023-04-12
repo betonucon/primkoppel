@@ -29,7 +29,7 @@
 					<td style="background:{{$color}}">{{$o->no_register}}</td>
 					<td style="background:{{$color}}">{{$o->name}}</td>
 					<td style="background:{{$color}}">{{$o->perusahaan}}</td>
-					<td style="background:{{$color}}">{{nilai_wajib()}}</td>
+					<td style="background:{{$color}}">{{uang(nilai_wajib())}}</td>
 				</tr>
 			@endforeach
 		</tbody>
