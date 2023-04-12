@@ -182,6 +182,29 @@
                         </div>
                     </div>
                 </div>
+				<div class="modal fade" id="modal-bayar" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title"></h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            </div>
+                            <div class="modal-body">
+								<form  class="form-horizontal " id="mydatabayar" action="{{url('/pinjaman/')}}" method="post" enctype="multipart/form-data">
+                                    @csrf
+									
+                                    	<div id="tampil_bayar"></div>
+									
+                                </form>   
+                            </div>
+                            <div class="modal-footer">
+                                <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Tutup</a>
+                                <a href="javascript:;" class="btn btn-blue" onclick="simpan_bayar()">Proses</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
 				<div class="modal fade" id="modal-file" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -212,6 +235,11 @@
 		function tambah(id){
 			$('#modal-tambah').modal('show');
 			$('#tampil_tambah').load("{{url('pinjaman/tambah')}}?id="+id);
+			
+		}
+		function tambah_bayar(id){
+			$('#modal-bayar').modal('show');
+			$('#tampil_bayar').load("{{url('pinjaman/bayar')}}?id="+id);
 			
 		}
 		function show_foto(file){
@@ -246,6 +274,7 @@
                                swal("Success! berhasil terhapus!", {
                                    icon: "success",
                                });
+							   
                                var tables=$('#data-table-default').DataTable();
                                 tables.ajax.url("{{ url('anggota/get_data')}}").load();
                            }
@@ -258,6 +287,42 @@
            });
            
         }
+		function hapus_cicilan(id,pinjaman_id){
+           
+           swal({
+               title: "Yakin menghapus data ini ?",
+               text: "",
+               type: "warning",
+               icon: "info",
+               showCancelButton: true,
+               align:"center",
+               confirmButtonClass: "btn-danger",
+               confirmButtonText: "Yes, delete it!",
+               closeOnConfirm: false
+           }).then((willDelete) => {
+               if (willDelete) {
+                       $.ajax({
+                           type: 'GET',
+                           url: "{{url('pinjaman/delete_cicilan')}}",
+                           data: "id="+id,
+                           success: function(msg){
+                               swal("Success! berhasil terhapus!", {
+                                   icon: "success",
+                               });
+							   $('#tampil_bayar').load("{{url('pinjaman/bayar')}}?id="+pinjaman_id);
+                               var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('pinjaman/get_data')}}").load();
+                           }
+                       });
+                   
+                   
+               } else {
+                   
+               }
+           });
+           
+        }
+
 		function simpan_data(){
                 
 				var form=document.getElementById('mydata');
@@ -277,6 +342,55 @@
 							document.getElementById("loadnya").style.width = "0px";
 							$('#modal-tambah').modal('hide');
 							$('#tampil_tambah').html("");
+							var tables=$('#data-table-default').DataTable();
+                                tables.ajax.url("{{ url('pinjaman/get_data')}}").load();
+						}else{
+							document.getElementById("loadnya").style.width = "0px";
+							
+							swal({
+								title: 'Notifikasi',
+							
+								html:true,
+								text:'ss',
+								icon: 'error',
+								buttons: {
+									cancel: {
+										text: 'Tutup',
+										value: null,
+										visible: true,
+										className: 'btn btn-dangers',
+										closeModal: true,
+									},
+									
+								}
+							});
+							$('.swal-text').html('<div style="width:100%;background:#f2f2f5;padding:1%;text-align:left;font-size:13px">'+msg+'</div>')
+						}
+						
+						
+					}
+				
+				});
+		}
+		function simpan_bayar(){
+                
+				var form=document.getElementById('mydatabayar');
+				$.ajax({
+					type: 'POST',
+					url: "{{ url('pinjaman/store_bayar') }}",
+					data: new FormData(form),
+					contentType: false,
+					cache: false,
+					processData:false,
+					beforeSend: function() {
+						document.getElementById("loadnya").style.width = "100%";
+					},
+					success: function(msg){
+						var bat=msg.split('@');
+						if(bat[1]=='ok'){
+							document.getElementById("loadnya").style.width = "0px";
+							$('#modal-bayar').modal('hide');
+							$('#tampil_bayar').html("");
 							var tables=$('#data-table-default').DataTable();
                                 tables.ajax.url("{{ url('pinjaman/get_data')}}").load();
 						}else{

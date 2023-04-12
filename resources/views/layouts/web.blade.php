@@ -47,6 +47,10 @@
 			vertical-align: top;
 			border-top: 1px solid #e4e7ea;
 		}
+		.panel.panel-inverse>.panel-heading {
+			background: #7e878f;
+			color: #fff;
+		}
 		.viewqr{
 			width:100%;
 			background:#e7e7fb;

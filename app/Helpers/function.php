@@ -488,4 +488,18 @@ function no_register(){
    return $nomor;
 }
 
+function no_order(){
+    
+   $cek=App\Orderstok::where('tahun',date('Y'))->count();
+   if($cek>0){
+       $mst=App\Orderstok::where('tahun',date('Y'))->orderBy('no_order','Desc')->firstOrfail();
+       $urutan = (int) substr($mst['no_order'], 3, 8);
+       $urutan++;
+       $nomor='S'.date('y').sprintf("%08s",  $urutan);
+   }else{
+       $nomor='S'.date('y').sprintf("%08s",  1);
+   }
+   return $nomor;
+}
+
 ?>

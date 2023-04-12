@@ -14,7 +14,7 @@
 					processing: false,
 					ordering: false,
 					serverSide: false,
-					ajax:"{{ url('pinjaman/get_data_riwayat')}}",
+					ajax:"{{ url('barang/get_data')}}",
 					columns: [
 						{ data: 'id', render: function (data, type, row, meta) 
                             {
@@ -22,19 +22,16 @@
                             } 
                         },
 						{ data: 'action', className: "text-center" },
-						{ data: 'no_register' },
-						{ data: 'nama' },
-						{ data: 'perusahaan' },
-						{ data: 'waktu_pinjaman', className: "text-center" },
-						{ data: 'uang_nominal', className: "text-right" },
-						{ data: 'uang_angsuran', className: "text-right" },
+						{ data: 'file', className: "text-center" },
+						{ data: 'kode_barang' },
+						{ data: 'nama_barang' },
+						{ data: 'satuan' , className: "text-center" },
+						{ data: 'uang_harga_modal', className: "text-right" },
+						{ data: 'uang_harga_jual', className: "text-right" },
+						{ data: 'stok', className: "text-right" },
 						
 						
 					],
-					createdRow: (row, data, dataIndex, cells) => {
-						$(cells[5]).css('background-color','aqua');
-						$(cells[1]).css('background-color','white');
-					},
 					language: {
 						paginate: {
 							// remove previous & next text from pagination
@@ -84,7 +81,7 @@
 					<div class="panel panel-inverse" data-sortable-id="form-plugins-1">
 						<!-- begin panel-heading -->
 						<div class="panel-heading">
-							<h4 class="panel-title">DAFTAR PINJAMAN</h4>
+							<h4 class="panel-title">MASTER BARANG</h4>
 							<div class="panel-heading-btn">
 								<a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
 							</div>
@@ -92,6 +89,10 @@
 						<!-- end panel-heading -->
 						<!-- begin panel-body -->
 						<div class="panel-body">
+								<div class="form-grup" style="margin-bottom:2%">
+									
+									<a href="javascript:;" class="btn btn-blue btn-sm m-r-2" onclick="tambah(`0`)"><i class="fa fa-plus"></i> Tambah</a>
+								</div>
 								
 								<form id="data-all" action="{{url('/Warga/hapus')}}" method="post" enctype="multipart/form-data">
 									@csrf
@@ -101,12 +102,13 @@
 											<tr>
 												<th width="5%">No</th>
 												<th width="5%"></th>
-												<th width="10%">NO REGISTER</th>
-												<th class="text-nowrap">NAMA</th>
-												<th width="20%">PERUSAHAAN</th>
-												<th width="8%" class="text-center">TENOR</th>
-												<th width="13%" class="text-nowrap">NOMINAL</th>
-												<th width="13%" class="text-nowrap">ANGSURAN</th>
+												<th width="5%"></th>
+												<th width="10%">KODE</th>
+												<th class="text-nowrap">NAMA BARANG</th>
+												<th width="10%" class="text-nowrap">SATUAN</th>
+												<th width="15%" class="text-nowrap">HARGA MODAL</th>
+												<th width="15%" class="text-nowrap">HARGA JUAL</th>
+												<th width="10%" class="text-nowrap">STOK</th>
 											</tr>
 											
 										</thead>
@@ -145,28 +147,6 @@
                         </div>
                     </div>
                 </div>
-				<div class="modal fade" id="modal-bayar" aria-hidden="true" style="display: none;">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title"></h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            </div>
-                            <div class="modal-body">
-								<form  class="form-horizontal " id="mydatabayar" action="{{url('/pinjaman/')}}" method="post" enctype="multipart/form-data">
-                                    @csrf
-									
-                                    	<div id="tampil_bayar"></div>
-									
-                                </form>   
-                            </div>
-                            <div class="modal-footer">
-                                <a href="javascript:;" class="btn btn-white" data-dismiss="modal">Tutup</a>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
 				<div class="modal fade" id="modal-file" aria-hidden="true" style="display: none;">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -196,7 +176,7 @@
 		
 		function tambah(id){
 			$('#modal-tambah').modal('show');
-			$('#tampil_tambah').load("{{url('pinjaman/tambah')}}?id="+id);
+			$('#tampil_tambah').load("{{url('barang/tambah')}}?id="+id);
 			
 		}
 		function show_foto(file){
@@ -204,91 +184,17 @@
 			$('#tampil_file').html("<img src='{{url('/public/_icon')}}/"+file+"' width='100%'>");
 			
 		}
-		function tambah_bayar(id){
-			$('#modal-bayar').modal('show');
-			$('#tampil_bayar').load("{{url('pinjaman/bayar')}}?id="+id);
-			
-		}
 		function show_foto(file,kode_qr){
 			$('#modal-file').modal('show');
-			$('#tampil_file').load("{{url('pinjaman/view_file')}}?file="+file+"&kode_qr="+kode_qr);
+			$('#tampil_file').load("{{url('barang/view_file')}}?file="+file+"&kode_qr="+kode_qr);
 			
 		}
-		function delete_data(id){
-           
-           swal({
-               title: "Yakin menghapus data ini ?",
-               text: "",
-               type: "warning",
-               icon: "info",
-               showCancelButton: true,
-               align:"center",
-               confirmButtonClass: "btn-danger",
-               confirmButtonText: "Yes, delete it!",
-               closeOnConfirm: false
-           }).then((willDelete) => {
-               if (willDelete) {
-                       $.ajax({
-                           type: 'GET',
-                           url: "{{url('anggota/delete')}}",
-                           data: "id="+id,
-                           success: function(msg){
-                               swal("Success! berhasil terhapus!", {
-                                   icon: "success",
-                               });
-                               var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('anggota/get_data_riwayat')}}").load();
-                           }
-                       });
-                   
-                   
-               } else {
-                   
-               }
-           });
-           
-        }
-		function hapus_cicilan(id,pinjaman_id){
-           
-           swal({
-               title: "Yakin menghapus data ini ?",
-               text: "",
-               type: "warning",
-               icon: "info",
-               showCancelButton: true,
-               align:"center",
-               confirmButtonClass: "btn-danger",
-               confirmButtonText: "Yes, delete it!",
-               closeOnConfirm: false
-           }).then((willDelete) => {
-               if (willDelete) {
-                       $.ajax({
-                           type: 'GET',
-                           url: "{{url('pinjaman/delete_cicilan')}}",
-                           data: "id="+id,
-                           success: function(msg){
-                               swal("Success! berhasil terhapus!", {
-                                   icon: "success",
-                               });
-							   $('#tampil_bayar').load("{{url('pinjaman/bayar')}}?id="+pinjaman_id);
-                               var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('pinjaman/get_data')}}").load();
-                           }
-                       });
-                   
-                   
-               } else {
-                   
-               }
-           });
-           
-        }
 		function simpan_data(){
                 
 				var form=document.getElementById('mydata');
 				$.ajax({
 					type: 'POST',
-					url: "{{ url('anggota/') }}",
+					url: "{{ url('barang/') }}",
 					data: new FormData(form),
 					contentType: false,
 					cache: false,
@@ -303,7 +209,7 @@
 							$('#modal-tambah').modal('hide');
 							$('#tampil_tambah').html("");
 							var tables=$('#data-table-default').DataTable();
-                                tables.ajax.url("{{ url('anggota/get_data_riwayat')}}").load();
+                                tables.ajax.url("{{ url('barang/get_data')}}").load();
 						}else{
 							document.getElementById("loadnya").style.width = "0px";
 							

@@ -20,10 +20,16 @@
 						</ul>
 					</li>
 					<li class="has-sub">
-						<a href="{{url('barang')}}">
+						<a href="javascript:;">
+							<b class="caret"></b>
 							<i class="fa fa-briefcase"></i>
-							<span>Daftar Barang</span>
+							<span>Barang</span> 
 						</a>
+						<ul class="sub-menu">
+							<li><a href="{{url('barang')}}">Daftar Barang </a></li>
+							<li><a href="{{url('orderstok')}}">Order Stok</a></li>
+							
+						</ul>
 					</li>
 					<li class="has-sub">
 						<a href="{{url('simpanan')}}">

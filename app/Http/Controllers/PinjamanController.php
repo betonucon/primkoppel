@@ -11,6 +11,7 @@ use App\Pinjaman;
 use App\Transaksi;
 use App\Periodepinjaman;
 use App\Pembayaranpinjaman;
+use App\Simpanansukarela;
 use App\VGetpinjaman;
 use App\VPinjaman;
 use App\VUser;
@@ -32,6 +33,15 @@ class PinjamanController extends Controller
         $data=VPinjaman::where('id',$request->id)->first();
         $get=VUser::where('sts_anggota',1)->where('pinjaman_aktif',0)->orderBy('name','Asc')->get();
         return view('pinjaman.tambah',compact('menu','get','data','id'));
+    }
+    public function bayar(request $request){
+        error_reporting(0);
+        $menu='Ajukan Pinjaman';
+        $id=$request->id;
+        $data=VPinjaman::where('id',$request->id)->first();
+        $get=Pembayaranpinjaman::where('pinjaman_id',$request->id)->get();
+        
+        return view('pinjaman.tambah_bayar',compact('menu','data','id','get'));
     }
     public function get_import(request $request){
         $data=VGetpinjaman::orderBy('no_register','Asc')->get();
@@ -83,26 +93,34 @@ class PinjamanController extends Controller
        
         return  Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function($data){
-                    if($data->sts_pinjaman==1){
-                        $btn='
-                            <div class="btn-group btn-group-sm dropup m-r-5">
-                                <span type="span" class="btn btn-indigo">Approve</span>
-                            </div>
-                        ';
-                    }else{
-                        $btn='
+                        if(in_array($data->sts_pinjaman,array(0,1))){
+                            $btn='
                             <div class="btn-group btn-group-sm dropup m-r-5">
                                 <a href="#" data-toggle="dropdown" class="btn btn-green btn-xs dropdown-toggle">Act <b class="caret"></b></a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a href="javascript:;" class="dropdown-item">Action Button</a>
                                     <div class="dropdown-divider"></div>
                                     <a href="javascript:;" onclick="tambah('.$data->id.')" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> Ubah</a>
+                                    <a href="javascript:;" onclick="approve('.$data->id.')" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> Ubah</a>
                                     <a href="javascript:;" onclick="delete_data('.$data->id.')"  class="dropdown-item"><i class="fas fa-trash-alt fa-fw"></i> Hapus</a>
                                     
                                 </div>
                             </div>
                         ';
-                    }
+                        }else{
+                            $btn='
+                            <div class="btn-group btn-group-sm dropup m-r-5">
+                                <a href="#" data-toggle="dropdown" class="btn btn-blue btn-xs dropdown-toggle">Bayar <b class="caret"></b></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a href="javascript:;" class="dropdown-item">Action Button</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="javascript:;" onclick="tambah_bayar('.$data->id.')" class="dropdown-item"><i class="fas fa-money fa-fw"></i> Form Pembayaran</a>
+                                    
+                                </div>
+                            </div>
+                        ';
+                        }
+                    
                         
                     return $btn;
                 })
@@ -135,9 +153,7 @@ class PinjamanController extends Controller
 								<div class="dropdown-menu dropdown-menu-right">
 									<a href="javascript:;" class="dropdown-item">Action Button</a>
 									<div class="dropdown-divider"></div>
-                                    <a href="javascript:;" onclick="tambah('.$data->anggota_id.')" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> Ubah</a>
-									<a href="javascript:;" onclick="delete_data('.$data->anggota_id.')"  class="dropdown-item"><i class="fas fa-trash-alt fa-fw"></i> Hapus</a>
-									
+                                    <a href="javascript:;" onclick="tambah_bayar('.$data->id.')" class="dropdown-item"><i class="fas fa-money fa-fw"></i> Riwayat Pembayaran</a>
 								</div>
 							</div>
                     ';
@@ -160,7 +176,13 @@ class PinjamanController extends Controller
                 ->rawColumns(['action','file'])
                 ->make(true);
     }
-
+    public function delete_cicilan(request $request){
+        error_reporting(0);
+        $sukarela=Simpanansukarela::where('transaksi_id',$request->id)->where('kategori_status',2)->delete();
+        $detail=Pembayaranpinjaman::where('id',$request->id)->delete();
+        
+       
+    }
     public function save_data(request $request){
         error_reporting(0);
         
@@ -253,6 +275,89 @@ class PinjamanController extends Controller
                 echo'@ok';
                 
             }
+        }
+    }
+
+    public function save_bayar(request $request){
+        error_reporting(0);
+        
+        $rules = [];
+        $messages = [];
+        
+        $rules['angsuran_masuk']= 'required';
+        $messages['angsuran_masuk.required']= 'Pilih angsuran';
+        
+        $validator = Validator::make($request->all(), $rules, $messages);
+        $val=$validator->Errors();
+
+
+        if ($validator->fails()) {
+            echo'<div style="padding:1%;background:##f3f3f3">Error !<br>';
+            foreach(parsing_validator($val) as $value){
+                foreach($value as $isi){
+                    echo'-&nbsp;'.$isi.'<br>';
+                }
+            }
+            echo'</div>';
+        }else{
+            
+                $mst=VPinjaman::where('id',$request->id)->first();
+                $kali=$request->angsuran_masuk-$mst->angsuran_masuk;
+                if($request->angsuran_masuk>$mst->waktu){
+                    echo'<div style="padding:1%;background:##f3f3f3">Error !<br> Angsuran maximal adalah '.$mst->masuk.'</div>';
+                }else{
+                    $pokok=($kali*$mst->pokok_cicilan);
+                    $angsuran=$pokok+$mst->bunga;
+                    $save=Pembayaranpinjaman::UpdateOrcreate([
+                        'pinjaman_id'=>$mst->id,
+                        'angsuran_ke'=>$request->angsuran_masuk,
+                        'no_register'=>$mst->no_register,
+                    ],[
+                        'bulan'=>date('m'),
+                        'tahun'=>date('Y'),
+                        'total_angsuran'=>$mst->waktu,
+                        'nilai_koperasi'=>$mst->nilai_koperasi,
+                        'nilai_sukarela'=>$mst->nilai_sukarela,
+                        'angsuran_pokok'=>$pokok,
+                        'bunga'=>$mst->bunga,
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        
+                    ]);
+                    $sukarela=Simpanansukarela::create([
+                        'no_register'=>$mst->no_register,
+                   
+                        'nomortransaksi'=>$mst->nomortransaksi,
+                        'transaksi_id'=>$save->id,
+                        'nominal'=>$mst->nilai_sukarela,
+                        'kategori_status'=>2,
+                        'sts'=>1,
+                        'bulan'=>date('m'),
+                        'tahun'=>date('Y'),
+                        'created_at'=>date('Y-m-d H:i:s'),
+                        
+                    ]);
+                    echo'@ok';
+                }
+                
+                // $save=Anggota::UpdateOrcreate([
+                //     'id'=>$request->id,
+                // ],[
+                //     'nama'=>$request->nama,
+                //     'no_hp'=>$request->no_hp,
+                //     'perusahaan'=>$request->perusahaan,
+                //     'updated_at'=>date('Y-m-d H:i:s'),
+                    
+                // ]);
+                // $saveuser=User::UpdateOrcreate([
+                //     'username'=>$mst->no_register,
+                // ],[
+                //     'name'=>$request->nama,
+                //     'updated_at'=>date('Y-m-d H:i:s'),
+                    
+                // ]);
+                // echo'@ok';
+                
+           
         }
     }
 }

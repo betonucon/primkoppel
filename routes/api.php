@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Controllers\Api\PinjamanController;
 use App\Http\Controllers\Api\BarangController;
+use App\Http\Controllers\Api\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,6 +31,10 @@ Route::middleware('auth:sanctum')->group( function () {
     });
     Route::group(['prefix' => 'pinjaman'],function(){
         Route::post('/', [PinjamanController::class, 'store']);
+    });
+    Route::group(['prefix' => 'order'],function(){
+        Route::post('/store', [OrderController::class, 'store']);
+        Route::post('/store_keranjang', [OrderController::class, 'store_keranjang']);
     });
 });
 
