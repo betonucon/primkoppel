@@ -117,7 +117,7 @@
 										<div class="col-lg-4">
 											<div class="input-group input-group-sm">
 												<div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-qrcode"></i></span></div>
-												<input type="text" value="{{$data->kode_qr}}" class="form-control" name="kode_qr" id="kode_qr"  onkeyup="show_qr(this.value)" placeholder="Ketik disini....">
+												<input type="text" value="{{$data->kode_qr}}" class="form-control" name="kode_qr" id="kode_qr"  onkeypress="show_qr(this.value)" placeholder="Ketik disini....">
 												
 											</div>
 										</div>
@@ -298,23 +298,32 @@
         @endif
 
 		function show_qr(text){
-			$.ajax({
-				type: 'GET',
-				url: "{{url('barang/cari_barang')}}?act={{$act}}",
-				data: "text="+text,
-				success: function(msg){
-					var bat=msg.split('@');
-					
-					$('#kode_barang_key').val(bat[1]);
-					$('#kode_barang').val(bat[1]);
-					$('#nama_barang').val(bat[2]);
-					$('#harga_modal').val(bat[3]);
-					$('#harga_jual').val(bat[4]);
-					$('#stok').val(bat[5]);
-					$('#qty').focus();
-					
-				}
-			});
+
+			setTimeout(exce(text), 19000);
+			
+			
+		}
+		function show_qr(text){
+			
+				$.ajax({
+					type: 'GET',
+					url: "{{url('barang/cari_barang')}}?act={{$method}}",
+					data: "text="+text,
+					success: function(msg){
+						var bat=msg.split('@');
+						
+						$('#kode_barang_key').val(bat[1]);
+						$('#kode_barang').val(bat[1]);
+						$('#nama_barang').val(bat[2]);
+						$('#harga_modal').val(bat[3]);
+						$('#harga_jual').val(bat[4]);
+						$('#stok').val(bat[5]);
+						$('#qtyty').focus();
+						
+					}
+				});
+			
+			
 			
 		}
 

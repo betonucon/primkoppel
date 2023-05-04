@@ -287,7 +287,7 @@
 		function show_qr(text){
 			$.ajax({
 				type: 'GET',
-				url: "{{url('barang/cari_barang')}}?act={{$act}}",
+				url: "{{url('barang/cari_barang')}}?act={{$method}}",
 				data: "text="+text,
 				success: function(msg){
 					var bat=msg.split('@');

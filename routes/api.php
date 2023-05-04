@@ -20,7 +20,7 @@ use App\Http\Controllers\Api\OrderController;
 Route::post('login', [AuthController::class, 'login']);
 Route::post('customer/login', [AuthController::class, 'login_customer']);
 Route::post('cek-login', [AuthController::class, 'cek_login']);
-
+Route::get('pinjaman/reset_pinjaman', [PinjamanController::class, 'reset_pinjaman']);
 Route::middleware('auth:sanctum')->group( function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group( function () {
     });
     Route::group(['prefix' => 'pinjaman'],function(){
         Route::post('/', [PinjamanController::class, 'store']);
+        
     });
     Route::group(['prefix' => 'order'],function(){
         Route::post('/store', [OrderController::class, 'store']);

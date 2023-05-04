@@ -23,7 +23,8 @@
                         },
 						{ data: 'action', className: "text-center" },
 						{ data: 'no_order' },
-						{ data: 'distributor' },
+						{ data: 'konsumen' },
+						{ data: 'tipe_konsumen' },
 						{ data: 'total_barang' , className: "text-center" },
 						{ data: 'uang_total_harga', className: "text-right" },
 						{ data: 'statusnya', className: "text-center" },
@@ -102,9 +103,10 @@
 												<th width="5%">No</th>
 												<th width="5%"></th>
 												<th width="10%">NO ORDER</th>
-												<th class="text-nowrap">DISTRIBUTOR</th>
-												<th width="10%" class="text-nowrap">ITEM</th>
-												<th width="15%" class="text-nowrap">TOTAL</th>
+												<th class="text-nowrap">KONSUMEN</th>
+												<th width="12%" class="text-nowrap">TIPE</th>
+												<th width="9%" class="text-nowrap">ITEM</th>
+												<th width="12%" class="text-nowrap">TOTAL</th>
 												<th width="12%" class="text-nowrap">STATUS</th>
 												<th width="14%" class="text-nowrap">WAKTU</th>
 											</tr>

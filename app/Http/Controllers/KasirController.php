@@ -76,7 +76,7 @@ class KasirController extends Controller
     }
 
     public function get_data(request $request){
-        $data=VOrderstok::orderBy('id','Desc')->get();
+        $data=VKasir::orderBy('id','Desc')->get();
        
         return  Datatables::of($data)->addIndexColumn()
                 ->addColumn('action', function($data){
@@ -86,7 +86,7 @@ class KasirController extends Controller
 								<div class="dropdown-menu dropdown-menu-right">
 									<a href="javascript:;" class="dropdown-item">Action Button</a>
 									<div class="dropdown-divider"></div>
-                                    <a href="javascript:;" onclick="location.assign(`'.url('orderstok/view').'?nomor='.$data->no_order.'`)" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> View</a>';
+                                    <a href="javascript:;" onclick="location.assign(`'.url('kasir/view').'?nomor='.$data->no_order.'`)" class="dropdown-item"><i class="fas fa-pencil-alt fa-fw"></i> View</a>';
                                     if($data->status==1){
                                         $btn.='<a href="javascript:;" onclick="delete_data('.$data->id.')"  class="dropdown-item"><i class="fas fa-trash-alt fa-fw"></i> Hapus</a>';
                                     }
@@ -191,6 +191,7 @@ class KasirController extends Controller
                 $save=Kasir::create([
                     'no_order'=>$no_order,
                     'tgl_order'=>$request->tgl_order,
+                    'kategori'=>$request->kategori,
                     'no_register'=>$no_register,
                     'konsumen'=>$konsumen,
                     'status'=>1,

@@ -31,7 +31,7 @@
 	<label class="col-lg-3 col-form-label text-right">Pembeli</label>
 	<div class="col-lg-9">
 		<div class="input-group input-group-sm">
-			<input type="text" class="form-control" name="distributor" value="{{$data->distributor}}" placeholder="Ketik disini....">
+			<input type="text" class="form-control" name="konsumen" value="{{$data->konsumen}}" placeholder="Ketik disini....">
 		</div>
 	</div>
 </div>
